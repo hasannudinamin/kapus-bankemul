@@ -4,9 +4,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require_once __DIR__ . '/helpers.php';
+$config = require_once __DIR__ . '/config.php';
 
 // Set a default title if the specific page doesn't provide one
-$page_title = isset($page_title) ? $page_title : 'Resep Bankemul';
+$page_title = isset($page_title) ? $page_title . ' - ' . $config['app']['name'] : $config['app']['name'] ;
 
 /** @var $hide_nav */
 ?>
