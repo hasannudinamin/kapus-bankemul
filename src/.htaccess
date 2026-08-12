@@ -1,0 +1,18 @@
+RewriteEngine On
+
+# Ensure the app doesn't loop if the file actually exists
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Route for viewing assets: transforms 'domain.com/v/QR001' into 'view.php?id=QR001'
+# 'v' is a short prefix to keep the QR code density low
+# RewriteRule ^v/([a-zA-Z0-9-]+)$ view.php?id=$1 [L,QSA]
+
+# Optional: Remove .php extension for general pages
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+# Block access to all hidden files and directories
+# This includes .git, .env, .htaccess itself, etc.
+RewriteRule "(^|/)\." - [F]

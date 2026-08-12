@@ -1,0 +1,9 @@
+# .gitignore
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+vendor/
+node_modules/
+db/
+/.php-cs-fixer.cache

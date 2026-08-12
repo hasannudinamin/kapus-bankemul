@@ -1,0 +1,12 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Containerfile
+    container_name: klinik-ira
+    ports:
+      - "8081:80"
+    volumes:
+      - ./src:/var/www/html:Z,U
+      - ./db:/var/www/db:Z
+    restart: unless-stopped
