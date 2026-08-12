@@ -5,7 +5,6 @@ require 'includes/db.php';
 
 $id = $_GET['id'] ?? null;
 $pasien = null;
-$raw_rm = 1;
 $display_rm = '';
 
 /** @var \PDO $pdo */
@@ -19,19 +18,11 @@ if ($id) {
         die("Data pasien tidak ditemukan.");
     }
     
-    // Format untuk mode edit
-    $raw_rm = $pasien['no_rm'];
-    $display_rm = 'RM-' . str_pad($raw_rm, 5, '0', STR_PAD_LEFT);
+    // Format untuk mode edit mengambil nilai utuh dari database
+    $display_rm = $pasien['no_rm'];
 } else {
-    // Auto-generate no_rm untuk pasien baru
-    $stmt_rm = $pdo->query("SELECT MAX(CAST(no_rm AS INTEGER)) FROM pasien");
-    $max_rm = $stmt_rm->fetchColumn();
-    
-    if ($max_rm) {
-        $raw_rm = (int)$max_rm + 1;
-    }
-    
-    $display_rm = 'RM-' . str_pad($raw_rm, 5, '0', STR_PAD_LEFT);
+    // Mode tambah hanya menampilkan penanda teks
+    $display_rm = '[Otomatis oleh Sistem]';
 }
 
 // Menetapkan judul halaman secara dinamis
@@ -84,11 +75,13 @@ $daftar_jenis_kelamin = JENIS_KELAMIN;
                 <div class="field">
                     <label class="label" for="no_rm_display">Nomor Rekam Medis (RM)</label>
                     <div class="control has-icons-left">
-                        <!-- Input tersembunyi yang menyimpan angka murni untuk database -->
-                        <input type="hidden" name="no_rm" value="<?= e($raw_rm) ?>">
+                        <?php if ($id) : ?>
+                            <!-- Input tersembunyi yang menjaga data RM saat update -->
+                            <input type="hidden" name="no_rm" value="<?= e($pasien['no_rm']) ?>">
+                        <?php endif; ?>
                         <!-- Input read-only untuk tampilan UI -->
                         <input 
-                          class="input has-background-white-bis has-text-weight-bold" 
+                          class="input has-background-white-bis has-text-weight-bold <?= !$id ? 'has-text-grey' : '' ?>" 
                           type="text" 
                           id="no_rm_display" 
                           value="<?= e($display_rm) ?>" 
