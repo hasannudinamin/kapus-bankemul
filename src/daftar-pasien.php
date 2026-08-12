@@ -130,25 +130,42 @@ if (!$is_htmx) {
                                 ?>
 
                                 <p class="mb-3 is-flex is-align-items-center is-flex-wrap-wrap">
-                                    <span class="is-flex is-align-items-center mr-3 mb-2" title="Usia">
-                                        <span class="icon is-small has-text-grey mr-1"><i class="mdi mdi-calendar-blank-outline"></i></span>
-                                        <span><?= $umur ?></span>
-                                    </span>
-
-                                    <span class="is-flex is-align-items-center mr-3 mb-2" title="Jenis Kelamin">
-                                        <span class="icon is-small has-text-grey mr-1"><i class="mdi <?= $icon_jk ?>"></i></span>
+                                    <table class="table is-fullwidth is-narrow is-borderless">
+                <tbody>
+                  <tr>
+                  <td>
+                                        <span class="icon is-small has-text-grey mr-1"><i class="mdi <?= $icon_jk ?>"></i></span> Jenis Kelamin
+                  </td>
+                    <td>
                                         <span><?= e($label_jk) ?></span>
-                                    </span>
-
-                                    <span class="is-flex is-align-items-center is-clipped mb-2" title="Nomor Telepon">
-                                        <span class="icon is-small has-text-grey mr-1"><i class="mdi mdi-phone-outline"></i></span>
-                                        <span><?= !empty($pasien['no_telp']) ? e($pasien['no_telp']) : '-' ?></span>
-                                    </span>
-
-                                    <span class="is-flex is-align-items-center is-clipped is-fullwidth" title="Alamat">
-                                        <span class="icon is-small has-text-grey mr-1"><i class="mdi mdi-map-marker-outline"></i></span>
+                    </td>
+                  </tr>
+                  <tr>
+                  <td>
+                                        <span class="icon is-small has-text-grey mr-1"><i class="mdi mdi-calendar-blank-outline"></i></span> Usia
+                  </td>
+                    <td>
+                      <?= $umur ?>
+                    </td>
+                  </tr>
+                  <tr>
+                  <td>
+                                        <span class="icon is-small has-text-grey mr-1"><i class="mdi mdi-map-marker-outline"></i></span> Alamat
+                  </td>
+                    <td>
                                         <span class="is-clipped"><?= !empty($pasien['alamat']) ? e($pasien['alamat']) : 'Alamat Kosong' ?></span>
-                                    </span>
+                    </td>
+                  </tr>
+                  <tr>
+                  <td>
+                                        <span class="icon is-small has-text-grey mr-1"><i class="mdi mdi-phone-outline"></i></span> No. Telepon
+                  </td>
+                    <td>
+                                        <span><?= !empty($pasien['no_telp']) ? e($pasien['no_telp']) : '-' ?></span>
+                    </td>
+                  </tr>
+                </tbody>
+                                    </table>
                                 </p>
                             </div>
 
