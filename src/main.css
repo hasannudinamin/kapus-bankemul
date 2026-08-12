@@ -1,0 +1,27 @@
+/* Apply the font globally to Bulma components */
+html, body, .button, .input, .title, .subtitle {
+  font-family: 'Roboto', sans-serif !important;
+  
+  /* Force Linux-like smooth font rendering across browsers */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* UI/UX refinement: Hide the default number input arrows for a seamless button look */
+.pagination-jump-input::-webkit-outer-spin-button,
+.pagination-jump-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.pagination-jump-input {
+    -moz-appearance: textfield; /* Firefox */
+    width: 1.5rem; /* Ensures the input isn't too wide */
+    text-align: center;
+    cursor: text;
+}
+/* Enhance focus state to let users know it's an editable field */
+.pagination-jump-input:focus {
+    box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
+    opacity: 0.9;
+}

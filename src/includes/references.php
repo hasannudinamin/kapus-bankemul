@@ -1,0 +1,55 @@
+<?php
+
+const JENIS_KELAMIN = [
+  'L' => 'Laki-laki',
+  'P' => 'Perempuan',
+];
+
+const DIAGNOSA = [
+  'DM',
+  'HT',
+  'DM HT',
+  'ASMA',
+  'CVA',
+  'EPILEPSI',
+  'EPILEPSI HT',
+  'HHF',
+  'PJK',
+  'PPOK',
+  'SKIZOFRENIA',
+  'STROKE',
+];
+
+const ALAMAT = [
+  'BRODOT',
+  'BANDARKEDUNGMULYO',
+  'BARONGSAWAHAN',
+  'BANJARSARI',
+  'PUCANGSIMO',
+  'BANARAN',
+  'GONDANGMANIS',
+  'MEKIKIS',
+  'MOJOKAMBANG',
+  'KARANGDAGANGAN',
+  'KAYEN',
+  'BRANGKAL',
+  'TINGGAR',
+  'PURWONEGORO',
+  'SENGON',
+  'NGEPUNG',
+  'KEPANJEN',
+  'PLUMBON GAMBANG',
+  'KALANGSEMANDING',
+  'WONOREJO',
+  'SUKOREJO',
+  'PERAK',
+  'PURWOASRI',
+  'PONGGOK',
+  'BANYUARANG',
+  'POJOK',
+  'JANTIGANGGONG',
+  'SUKANAGARA',
+  'DAYU',
+  'WIDORO',
+  'CADASARI',
+];
