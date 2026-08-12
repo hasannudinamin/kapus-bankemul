@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 redirect("pelayanan.php?status=success&msg=terdaftar");
             } else {
                 // Mode Mandiri: Arahkan langsung ke form pemeriksaan menggunakan parameter id_rm
-                redirect("kunjungan.php?id_rm=" . $id_rm);
+                redirect("pemeriksaan.php?id_rm=" . $id_rm);
             }
 
         } catch (Exception $e) {
