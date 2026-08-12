@@ -22,10 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
             $pdo->beginTransaction();
+            // Menghasilkan string waktu saat ini berdasarkan zona waktu PHP (Asia/Jakarta)
+            $waktu_sekarang = date('Y-m-d H:i:s');
 
             // 1. Mendaftarkan kunjungan ke tabel rekam_medik dengan status antre
-            $stmt_rm = $pdo->prepare("INSERT INTO rekam_medik (pasien_id, user_id, status_layanan) VALUES (?, ?, 'menunggu')");
-            $stmt_rm->execute([$pasien_id, $user_id]);
+            // Memasukkan variabel waktu_sekarang secara eksplisit ke kolom tanggal_kunjungan
+            $stmt_rm = $pdo->prepare("INSERT INTO rekam_medik (pasien_id, user_id, status_layanan, tanggal_kunjungan) VALUES (?, ?, 'menunggu', ?)");
+            $stmt_rm->execute([$pasien_id, $user_id, $waktu_sekarang]);
             
             // Menangkap ID dari kunjungan yang baru saja dibuat
             $id_rm = $pdo->lastInsertId();

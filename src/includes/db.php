@@ -55,7 +55,7 @@ try {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         pasien_id INTEGER NOT NULL,
         user_id INTEGER NOT NULL,
-        tanggal_kunjungan DATETIME DEFAULT CURRENT_TIMESTAMP,
+        tanggal_kunjungan DATETIME,
         status_layanan TEXT DEFAULT 'menunggu',
         keluhan TEXT,
         diagnosa TEXT,
