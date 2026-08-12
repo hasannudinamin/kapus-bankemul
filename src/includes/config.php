@@ -3,6 +3,6 @@
 return [
   'app' => [
     'name' => 'Klinik Ira',
-    'mode' => 'mandiri' // pilih mandiri atau klinik
+    'mode' => 'klinik' // pilih mandiri atau klinik
   ],
 ];

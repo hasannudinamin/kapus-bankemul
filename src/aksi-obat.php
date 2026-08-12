@@ -76,6 +76,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             die("Terjadi kesalahan sistem: " . $e->getMessage());
         }
         
+    } elseif ($action === 'restock') {
+        $id = $_POST['id'] ?? null;
+        $jumlah_masuk = (int)($_POST['jumlah_masuk'] ?? 0);
+
+        if ($id && $jumlah_masuk > 0) {
+            try {
+                $pdo->beginTransaction();
+
+                // Menambahkan jumlah stok yang ada di database secara aman
+                $stmt = $pdo->prepare("UPDATE obat SET stok = stok + ? WHERE id = ?");
+                $stmt->execute([$jumlah_masuk, $id]);
+
+                $pdo->commit();
+                redirect("manajemen-obat.php");
+            } catch (Exception $e) {
+                $pdo->rollBack();
+                die("Gagal memperbarui stok: " . $e->getMessage());
+            }
+        } else {
+            die("Jumlah stok masuk tidak valid.");
+        }
     } elseif ($action === 'delete') {
         $id = $_POST['id'];
 
