@@ -56,6 +56,7 @@ try {
         pasien_id INTEGER NOT NULL,
         user_id INTEGER NOT NULL,
         tanggal_kunjungan DATETIME DEFAULT CURRENT_TIMESTAMP,
+        status_layanan TEXT DEFAULT 'antre',
         keluhan TEXT,
         diagnosa TEXT,
         tindakan TEXT,
