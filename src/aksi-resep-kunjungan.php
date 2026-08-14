@@ -20,6 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit("Data resep tidak valid.");
         }
 
+        // VALIDASI KEAMANAN
+        $stmt_cek = $pdo->prepare("SELECT status_layanan FROM rekam_medik WHERE id = ?");
+        $stmt_cek->execute([$rekam_medik_id]);
+        if (in_array(strtolower($stmt_cek->fetchColumn()), ['farmasi', 'pembayaran', 'selesai'])) {
+            http_response_code(403);
+            exit("Akses ditolak: Resep telah dikunci.");
+        }
+
         try {
             // Perhatian: Kita HANYA mencatat resep ke tabel. 
             // Pemotongan stok tabel `obat` tidak dilakukan di sini untuk mengizinkan dokter merevisi resep dengan aman.
@@ -70,6 +78,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = $_POST['id'] ?? null;
 
         if ($id) {
+            // VALIDASI KEAMANAN (Cek dari relasi tabel resep ke rekam_medik)
+            $stmt_cek = $pdo->prepare("SELECT rm.status_layanan FROM rekam_medik rm JOIN resep r ON rm.id = r.rekam_medik_id WHERE r.id = ?");
+            $stmt_cek->execute([$id]);
+            if (in_array(strtolower($stmt_cek->fetchColumn()), ['farmasi', 'pembayaran', 'selesai'])) {
+                http_response_code(403);
+                exit("Akses ditolak: Resep telah dikunci.");
+            }
+
             try {
                 $stmt = $pdo->prepare("DELETE FROM resep WHERE id = ?");
                 $stmt->execute([$id]);

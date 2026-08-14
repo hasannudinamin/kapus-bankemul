@@ -4,7 +4,6 @@
 require 'includes/auth-check.php';
 require 'includes/db.php';
 
-// Memuat konfigurasi aplikasi dari direktori yang tepat
 $config = require_once __DIR__ . '/includes/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -16,6 +15,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$id_rm) {
         die("Gagal: ID Rekam Medis tidak ditemukan.");
+    }
+
+    // VALIDASI KEAMANAN: Pastikan status pasien belum melampaui pemeriksaan
+    $stmt_cek = $pdo->prepare("SELECT status_layanan FROM rekam_medik WHERE id = ?");
+    $stmt_cek->execute([$id_rm]);
+    $status_sekarang = $stmt_cek->fetchColumn();
+
+    if (in_array(strtolower($status_sekarang), ['farmasi', 'pembayaran', 'selesai'])) {
+        die("Pelanggaran Akses: Anda tidak diizinkan mengubah catatan medis karena resep pasien sudah mulai diproses atau selesai.");
     }
 
     try {
@@ -44,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     } catch (Exception $e) {
-        die("Terjadi kesalahan sistem saat menyimpan pemeriksaan: " . $e->getMessage());
+        die("Terjadi kesalahan sistem: " . $e->getMessage());
     }
 }
 

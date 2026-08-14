@@ -23,6 +23,9 @@ if (!$kunjungan) {
     die("Data kunjungan tidak ditemukan.");
 }
 
+// Variabel Pengunci Keamanan: True jika pasien sudah melewati tahap pemeriksaan
+$is_locked = in_array(strtolower($kunjungan['status_layanan']), ['farmasi', 'pembayaran', 'selesai']);
+
 // Mengambil daftar resep yang sudah ditambahkan pada kunjungan ini
 $resep_stmt = $pdo->prepare("
     SELECT r.*, o.nama_obat, o.satuan 
@@ -59,6 +62,13 @@ include 'includes/header.php';
     </div>
 </div>
 
+<?php if ($is_locked): ?>
+<div class="notification is-warning is-light mb-4">
+    <span class="icon mr-1"><i class="mdi mdi-lock-outline"></i></span>
+    <strong>Pemeriksaan Terkunci!</strong> Anda tidak dapat mengubah data pemeriksaan dan resep karena pasien telah beralih ke tahap layanan <strong><?= e(ucfirst($kunjungan['status_layanan'])) ?></strong>.
+</div>
+<?php endif; ?>
+
 <div class="columns is-desktop is-variable is-3">
     <!-- KOLOM KIRI: Form Rekam Medis Utama -->
     <div class="column is-6">
@@ -80,33 +90,31 @@ include 'includes/header.php';
                 <div class="field">
                     <label class="label has-text-grey">Keluhan Pasien (Anamnesa)</label>
                     <div class="control">
-                        <textarea class="textarea is-info-focus" name="keluhan" rows="3" placeholder="Deskripsikan keluhan pasien..."><?= e($kunjungan['keluhan']) ?></textarea>
+                        <textarea class="textarea is-info-focus" name="keluhan" rows="3" placeholder="Deskripsikan keluhan pasien..." <?= $is_locked ? 'readonly' : '' ?>><?= e($kunjungan['keluhan']) ?></textarea>
                     </div>
                 </div>
 
                 <div class="field">
-    <label class="label has-text-grey">Diagnosa Utama (ICD-10)</label>
-    <div class="control" id="diagnosa-widget" style="position: relative;">
-        <div class="control has-icons-left">
-            <input class="input is-info-focus" type="text" id="input-cari-diagnosa" name="diagnosa" value="<?= e($kunjungan['diagnosa']) ?>" placeholder="Ketik nama penyakit atau kode ICD-10..." autocomplete="off"
-                hx-get="komponen-cari-diagnosa.php"
-                hx-target="#hasil-pencarian-diagnosa"
-                hx-trigger="input changed delay:500ms, search"
-                hx-sync="this:replace">
-            <span class="icon is-small is-left"><i class="mdi mdi-medical-bag"></i></span>
-        </div>
-        <!-- Hasil pencarian dari API akan muncul melayang di dalam div ini -->
-        <div id="hasil-pencarian-diagnosa" style="position: absolute; width: 100%; z-index: 1000; top: 100%; left: 0;"></div>
-    </div>
-</div> 
+                    <label class="label has-text-grey">Diagnosa Utama (ICD-10)</label>
+                    <div class="control" id="diagnosa-widget" style="position: relative;">
+                        <div class="control has-icons-left">
+                            <input class="input is-info-focus" type="text" id="input-cari-diagnosa" name="diagnosa" value="<?= e($kunjungan['diagnosa']) ?>" <?= $is_locked ? 'readonly' : 'hx-get="komponen-cari-diagnosa.php" hx-target="#hasil-pencarian-diagnosa" hx-trigger="input changed delay:500ms, search" hx-sync="this:replace" placeholder="Ketik nama penyakit atau kode ICD-10..." autocomplete="off"' ?>>
+                            <span class="icon is-small is-left"><i class="mdi mdi-medical-bag"></i></span>
+                        </div>
+                        <?php if (!$is_locked): ?>
+                            <div id="hasil-pencarian-diagnosa" style="position: absolute; width: 100%; z-index: 1000; top: 100%; left: 0;"></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
 
                 <div class="field">
                     <label class="label has-text-grey">Tindakan Medis</label>
                     <div class="control">
-                        <textarea class="textarea is-info-focus" name="tindakan" rows="3" placeholder="Tindakan medis yang dilakukan di ruang periksa..."><?= e($kunjungan['tindakan']) ?></textarea>
+                        <textarea class="textarea is-info-focus" name="tindakan" rows="3" placeholder="Tindakan medis yang dilakukan di ruang periksa..." <?= $is_locked ? 'readonly' : '' ?>><?= e($kunjungan['tindakan']) ?></textarea>
                     </div>
                 </div>
 
+                <?php if (!$is_locked): ?>
                 <div class="field mt-5 is-grouped is-grouped-right">
                     <div class="control">
                         <button type="submit" name="action" value="simpan_draft" class="button is-light is-info">
@@ -122,6 +130,7 @@ include 'includes/header.php';
                         </button>
                     </div>
                 </div>
+                <?php endif; ?>
             </form>
         </div>
     </div>
@@ -136,33 +145,30 @@ include 'includes/header.php';
                 </h4>
             </div>
 
-      <!-- Form Asinkron HTMX untuk Menambah Obat -->
-<div class="mb-5 p-4 has-background-white-bis" style="border-radius: 8px;">
-    <form hx-post="aksi-resep-kunjungan.php" hx-target="#tabel-resep" hx-swap="beforeend" 
-          hx-on::after-request="if(event.detail.successful && event.target === this) { this.reset(); const btnReset = document.getElementById('btn-reset-obat'); if(btnReset) btnReset.click(); }">
-        
-        <input type="hidden" name="action" value="create">
-        <input type="hidden" name="rekam_medik_id" value="<?= e($id_rm) ?>">
-                   
+            <?php if (!$is_locked): ?>
+            <!-- Form Asinkron HTMX untuk Menambah Obat -->
+            <div class="mb-5 p-4 has-background-white-bis" style="border-radius: 8px;">
+                <form hx-post="aksi-resep-kunjungan.php" hx-target="#tabel-resep" hx-swap="beforeend" 
+                      hx-on::after-request="if(event.detail.successful && event.target === this) { this.reset(); const btnReset = document.getElementById('btn-reset-obat'); if(btnReset) btnReset.click(); }">
+                    
+                    <input type="hidden" name="action" value="create">
+                    <input type="hidden" name="rekam_medik_id" value="<?= e($id_rm) ?>">
+                    
                     <div class="columns is-mobile is-multiline">
                         <div class="column is-12-desktop is-12-mobile">
                             <div class="field">
                                 <label class="label is-small">Cari & Pilih Obat</label>
-                            <!-- Widget Dropdown Custom HTMX -->
-<div class="control" id="obat-widget" style="position: relative;">
-    <div class="control has-icons-left">
-        <!-- Perbaikan: Tambahkan name="q" dan arahkan hx-get ke action=search -->
-        <input class="input is-small is-link-focus" type="text" id="input-cari-obat" name="q" placeholder="Ketik nama obat..." autocomplete="off"
-            hx-get="komponen-cari-obat.php?action=search"
-            hx-target="#hasil-pencarian"
-            hx-trigger="input changed delay:300ms, search"
-                      hx-sync="this:replace"
-                    hx-swap="innerHTML">
-        <span class="icon is-small is-left"><i class="mdi mdi-magnify"></i></span>
-    </div>
-    <!-- Hasil pencarian akan muncul melayang di dalam div ini -->
-    <div id="hasil-pencarian" style="position: absolute; width: 100%; z-index: 1000; top: 100%; left: 0;"></div>
-</div> 
+                                <div class="control" id="obat-widget" style="position: relative;">
+                                    <div class="control has-icons-left">
+                                        <input class="input is-small is-link-focus" type="text" id="input-cari-obat" name="q" placeholder="Ketik nama obat..." autocomplete="off"
+                                            hx-get="komponen-cari-obat.php?action=search"
+                                            hx-target="#hasil-pencarian"
+                                            hx-trigger="input changed delay:300ms, search"
+                                            hx-sync="this:replace">
+                                        <span class="icon is-small is-left"><i class="mdi mdi-magnify"></i></span>
+                                    </div>
+                                    <div id="hasil-pencarian" style="position: absolute; width: 100%; z-index: 1000; top: 100%; left: 0;"></div>
+                                </div>
                             </div>
                         </div>
 
@@ -196,6 +202,7 @@ include 'includes/header.php';
                     </div>
                 </form>
             </div>
+            <?php endif; ?>
 
             <!-- Tabel Daftar Resep yang Sudah Masuk -->
             <div class="table-container">
@@ -205,13 +212,15 @@ include 'includes/header.php';
                             <th width="45%">Nama Obat</th>
                             <th width="25%">Aturan Pakai</th>
                             <th width="15%">Jml</th>
+                            <?php if (!$is_locked): ?>
                             <th width="15%" class="has-text-right">Aksi</th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody id="tabel-resep">
                         <?php if (empty($resep_list)): ?>
                             <tr id="baris-kosong">
-                                <td colspan="4" class="has-text-centered has-text-grey is-italic">Belum ada obat yang diresepkan.</td>
+                                <td colspan="<?= $is_locked ? '3' : '4' ?>" class="has-text-centered has-text-grey is-italic">Belum ada obat yang diresepkan.</td>
                             </tr>
                         <?php else: ?>
                             <?php foreach ($resep_list as $resep) : ?>
@@ -219,6 +228,7 @@ include 'includes/header.php';
                                     <td class="is-vcentered has-text-weight-bold"><?= e($resep['nama_obat']) ?></td>
                                     <td class="is-vcentered"><?= e($resep['aturan_pakai']) ?></td>
                                     <td class="is-vcentered"><?= e($resep['jumlah']) ?> <?= e($resep['satuan']) ?></td>
+                                    <?php if (!$is_locked): ?>
                                     <td class="is-vcentered has-text-right">
                                         <!-- Tombol Hapus Baris Resep via HTMX -->
                                         <button hx-post="aksi-resep-kunjungan.php" 
@@ -230,6 +240,7 @@ include 'includes/header.php';
                                             <span class="icon"><i class="mdi mdi-trash-can-outline"></i></span>
                                         </button>
                                     </td>
+                                    <?php endif; ?>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -240,8 +251,9 @@ include 'includes/header.php';
     </div>
 </div>
 
+<?php if (!$is_locked): ?>
 <script>
-// Logika navigasi keyboard untuk widget pencarian obat HTMX
+// Navigasi keyboard widget HTMX ditempatkan di sini...
 document.addEventListener('keydown', function(e) {
     const inputCari = document.getElementById('input-cari-obat');
     if (document.activeElement !== inputCari) return;
@@ -249,7 +261,7 @@ document.addEventListener('keydown', function(e) {
     const hasilContainer = document.getElementById('hasil-pencarian');
     if (!hasilContainer) return;
 
-    const items = hasilContainer.querySelectorAll('.panel-block');
+    const items = hasilContainer.querySelectorAll('.panel-block, .obat-item');
     if (items.length === 0) return;
 
     let currentIndex = Array.from(items).findIndex(item => item.classList.contains('has-background-link-light'));
@@ -276,16 +288,6 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Menghilangkan pesan "Belum ada obat" jika ada item baru masuk ke tabel via HTMX
-document.body.addEventListener('htmx:afterSwap', function(evt) {
-    if(evt.detail.target.id === 'tabel-resep') {
-        const barisKosong = document.getElementById('baris-kosong');
-        if(barisKosong) { barisKosong.remove(); }
-    }
-});
-
-
-// Navigasi keyboard untuk widget diagnosa
 document.addEventListener('keydown', function(e) {
     const inputDiagnosa = document.getElementById('input-cari-diagnosa');
     if (document.activeElement === inputDiagnosa) {
@@ -331,6 +333,14 @@ document.addEventListener('click', function(e) {
         if (hasilObat) hasilObat.innerHTML = '';
     }
 });
+
+document.body.addEventListener('htmx:afterSwap', function(evt) {
+    if(evt.detail.target.id === 'tabel-resep') {
+        const barisKosong = document.getElementById('baris-kosong');
+        if(barisKosong) { barisKosong.remove(); }
+    }
+});
 </script>
+<?php endif; ?>
 
 <?php include 'includes/footer.php'; ?>
