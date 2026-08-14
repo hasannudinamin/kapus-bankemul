@@ -136,32 +136,33 @@ include 'includes/header.php';
                 </h4>
             </div>
 
-            <!-- Form Asinkron HTMX untuk Menambah Obat -->
-            <div class="mb-5 p-4 has-background-white-bis" style="border-radius: 8px;">
-                <form hx-post="aksi-resep-kunjungan.php" hx-target="#tabel-resep" hx-swap="beforeend" 
-                      hx-on::after-request="if(event.detail.successful) { this.reset(); document.getElementById('hasil-pencarian').innerHTML = ''; }">
-                    
-                    <input type="hidden" name="action" value="create">
-                    <input type="hidden" name="rekam_medik_id" value="<?= e($id_rm) ?>">
-                    
+      <!-- Form Asinkron HTMX untuk Menambah Obat -->
+<div class="mb-5 p-4 has-background-white-bis" style="border-radius: 8px;">
+    <form hx-post="aksi-resep-kunjungan.php" hx-target="#tabel-resep" hx-swap="beforeend" 
+          hx-on::after-request="if(event.detail.successful && event.target === this) { this.reset(); const btnReset = document.getElementById('btn-reset-obat'); if(btnReset) btnReset.click(); }">
+        
+        <input type="hidden" name="action" value="create">
+        <input type="hidden" name="rekam_medik_id" value="<?= e($id_rm) ?>">
+                   
                     <div class="columns is-mobile is-multiline">
                         <div class="column is-12-desktop is-12-mobile">
                             <div class="field">
                                 <label class="label is-small">Cari & Pilih Obat</label>
-                                <!-- Widget Dropdown Custom HTMX -->
-                                <div class="control" id="obat-widget" style="position: relative;">
-                                    <div class="control has-icons-left">
-                                        <!-- Input ini bertindak sebagai trigger pencarian -->
-                                        <input class="input is-small is-link-focus" type="text" id="input-cari-obat" placeholder="Ketik nama obat..." autocomplete="off"
-                                            hx-get="komponen-cari-obat.php"
-                                            hx-target="#hasil-pencarian"
-                                            hx-trigger="input changed delay:250ms, search"
-                                            hx-sync="this:replace">
-                                        <span class="icon is-small is-left"><i class="mdi mdi-magnify"></i></span>
-                                    </div>
-                                    <!-- Hasil pencarian akan muncul melayang di dalam div ini -->
-                                    <div id="hasil-pencarian" style="position: absolute; width: 100%; z-index: 1000; top: 100%; left: 0;"></div>
-                                </div>
+                            <!-- Widget Dropdown Custom HTMX -->
+<div class="control" id="obat-widget" style="position: relative;">
+    <div class="control has-icons-left">
+        <!-- Perbaikan: Tambahkan name="q" dan arahkan hx-get ke action=search -->
+        <input class="input is-small is-link-focus" type="text" id="input-cari-obat" name="q" placeholder="Ketik nama obat..." autocomplete="off"
+            hx-get="komponen-cari-obat.php?action=search"
+            hx-target="#hasil-pencarian"
+            hx-trigger="input changed delay:300ms, search"
+                      hx-sync="this:replace"
+                    hx-swap="innerHTML">
+        <span class="icon is-small is-left"><i class="mdi mdi-magnify"></i></span>
+    </div>
+    <!-- Hasil pencarian akan muncul melayang di dalam div ini -->
+    <div id="hasil-pencarian" style="position: absolute; width: 100%; z-index: 1000; top: 100%; left: 0;"></div>
+</div> 
                             </div>
                         </div>
 
