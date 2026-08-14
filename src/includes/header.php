@@ -54,28 +54,28 @@ $page_title = isset($page_title) ? $page_title . ' - ' . $config['app']['name'] 
                 </div>
                 <div class="navbar-menu" id="navMenu">
                     <div class="navbar-start">
-                        <a href="daftar-resep.php" class="navbar-item">
-                            <span class="icon-text">
-                                <span class="icon has-text-primary">
-                                    <i class="mdi mdi-prescription"></i>
-                                </span>
-                                <span>Resep</span>
-                            </span>
-                        </a>
                         <a href="daftar-pasien.php" class="navbar-item">
                             <span class="icon-text">
-                                <span class="icon has-text-info">
-                                    <i class="mdi mdi-account"></i>
+                                <span class="icon has-text-primary">
+                                    <i class="mdi mdi-account-group"></i>
                                 </span>
                                 <span>Pasien</span>
                             </span>
                         </a>
-                        <a href="daftar-obat.php" class="navbar-item">
+                        <a href="pelayanan.php" class="navbar-item">
+                            <span class="icon-text">
+                                <span class="icon has-text-info">
+                                    <i class="mdi mdi-medication"></i>
+                                </span>
+                                <span>Pelayanan</span>
+                            </span>
+                        </a>
+                        <a href="manajemen-obat.php" class="navbar-item">
                             <span class="icon-text">
                                 <span class="icon has-text-warning">
                                     <i class="mdi mdi-pill"></i>
                                 </span>
-                                <span>Obat</span>
+                                <span>Farmasi</span>
                             </span>
                         </a>
                         <div class="navbar-item has-dropdown is-hoverable">
