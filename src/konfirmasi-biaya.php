@@ -12,7 +12,7 @@ if (!$id_rm) {
 // Mengambil data rekam medis, pasien, dan data keuangan terkait
 $stmt = $pdo->prepare("
     SELECT rm.*, p.nama_lengkap, p.no_rm, p.tanggal_lahir, p.jenis_kelamin,
-           k.id AS keuangan_id, k.total_tagihan, k.uang_dibayar, k.kembalian, k.status_pembayaran
+           k.id AS keuangan_id, k.biaya_layanan, k.biaya_obat, k.total_tagihan, k.uang_dibayar, k.kembalian, k.status_pembayaran
     FROM rekam_medik rm 
     JOIN pasien p ON rm.pasien_id = p.id 
     LEFT JOIN keuangan k ON rm.id = k.rekam_medik_id
@@ -46,7 +46,7 @@ foreach ($resep_list as $r) {
 }
 
 // Biaya jasa pemeriksaan dokter bawaan (default)
-$biaya_jasa_default = 25000;
+$biaya_jasa_default = $is_selesai ? (float)$kunjungan['biaya_layanan'] : 25000;
 
 $umur = hitung_umur($kunjungan['tanggal_lahir'], 'Tahun');
 $page_title = 'Konfirmasi Biaya & Kasir: ' . e($kunjungan['nama_lengkap']);
@@ -149,12 +149,12 @@ include 'includes/header.php';
             <?php if (!$is_selesai): ?>
             <form action="aksi-pembayaran.php" method="POST" id="form-pembayaran">
                 <input type="hidden" name="id_rm" value="<?= e($id_rm) ?>">
-                <input type="hidden" name="total_obat" id="input-total-obat" value="<?= $total_biaya_obat ?>">
+                <input type="hidden" name="biaya_obat" id="input-total-obat" value="<?= $total_biaya_obat ?>">
                 
                 <div class="field mb-3">
                     <label class="label is-small">Biaya Jasa Dokter (Rp)</label>
                     <div class="control has-icons-left">
-                        <input class="input is-primary-focus" type="number" name="biaya_jasa" id="input-biaya-jasa" value="<?= $biaya_jasa_default ?>" min="0" required>
+                        <input class="input is-primary-focus" type="number" name="biaya_layanan" id="input-biaya-jasa" value="<?= $biaya_jasa_default ?>" min="0" required>
                         <span class="icon is-small is-left"><i class="mdi mdi-doctor"></i></span>
                     </div>
                 </div>

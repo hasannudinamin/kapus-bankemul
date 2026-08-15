@@ -14,7 +14,7 @@ if (!$id_rm) {
 // Mengambil data transaksi, rekam medis, dan informasi pasien
 $stmt = $pdo->prepare("
     SELECT rm.tanggal_kunjungan, p.nama_lengkap, p.no_rm, 
-           k.id AS no_transaksi, k.total_tagihan, k.uang_dibayar, k.kembalian, k.status_pembayaran
+           k.id AS no_transaksi, k.biaya_layanan, k.total_tagihan, k.uang_dibayar, k.kembalian, k.status_pembayaran
     FROM rekam_medik rm 
     JOIN pasien p ON rm.pasien_id = p.id 
     JOIN keuangan k ON rm.id = k.rekam_medik_id
@@ -45,8 +45,6 @@ $clinic_name = $config['app']['name'] ?? 'Klinik';
 $width_css = $printer_size === '80mm' ? '72mm' : '48mm';
 $font_size = $printer_size === '80mm' ? '14px' : '12px';
 
-// Biaya jasa pemeriksaan dokter bawaan (default)
-$biaya_jasa = 25000;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -133,10 +131,10 @@ $biaya_jasa = 25000;
             </tr>
             <tr>
                 <td width="20%">1x</td>
-                <td width="40%" class="text-right"><?= number_format($biaya_jasa, 0, ',', '.') ?></td>
-                <td width="40%" class="text-right"><?= number_format($biaya_jasa, 0, ',', '.') ?></td>
+                <td width="40%" class="text-right"><?= number_format($data['biaya_layanan'], 0, ',', '.') ?></td>
+                <td width="40%" class="text-right"><?= number_format($data['biaya_layanan'], 0, ',', '.') ?></td>
             </tr>
-            
+
             <!-- Item Obat -->
             <?php foreach ($resep_list as $resep): 
                 $subtotal = $resep['jumlah'] * $resep['harga_satuan'];

@@ -9,6 +9,8 @@ $config = require_once __DIR__ . '/includes/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_rm = $_POST['id_rm'] ?? null;
+    $biaya_layanan = (float)($_POST['biaya_layanan'] ?? 0); // Tambahkan baris ini
+    $biaya_obat = (float)($_POST['biaya_obat'] ?? 0);
     $total_tagihan = (float)($_POST['total_tagihan'] ?? 0);
     $uang_dibayar = (float)($_POST['uang_dibayar'] ?? 0);
 
@@ -44,16 +46,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($has_keuangan) {
             $stmt_keuangan = $pdo->prepare("
                 UPDATE keuangan 
-                SET total_tagihan = ?, uang_dibayar = ?, kembalian = ?, status_pembayaran = 'lunas' 
+                SET biaya_layanan = ?, biaya_obat = ?, total_tagihan = ?, uang_dibayar = ?, kembalian = ?, status_pembayaran = 'lunas' 
                 WHERE rekam_medik_id = ?
             ");
-            $stmt_keuangan->execute([$total_tagihan, $uang_dibayar, $kembalian, $id_rm]);
+            $stmt_keuangan->execute([$biaya_layanan, $biaya_obat, $total_tagihan, $uang_dibayar, $kembalian, $id_rm]);
         } else {
             $stmt_keuangan = $pdo->prepare("
-                INSERT INTO keuangan (rekam_medik_id, total_tagihan, uang_dibayar, kembalian, status_pembayaran) 
-                VALUES (?, ?, ?, ?, 'lunas')
+                INSERT INTO keuangan (rekam_medik_id, biaya_layanan, biaya_obat, total_tagihan, uang_dibayar, kembalian, status_pembayaran) 
+                VALUES (?, ?, ?, ?, ?, ?, 'lunas')
             ");
-            $stmt_keuangan->execute([$id_rm, $total_tagihan, $uang_dibayar, $kembalian]);
+            $stmt_keuangan->execute([$id_rm, $biaya_layanan, $biaya_obat, $total_tagihan, $uang_dibayar, $kembalian]);
         }
 
         // 3. Memperbarui status layanan rekam medis menjadi 'selesai'
