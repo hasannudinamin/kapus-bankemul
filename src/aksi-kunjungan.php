@@ -41,13 +41,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // 3. Logika pengalihan (redirect) berdasarkan mode aplikasi
             $mode = $config['app']['mode'] ?? 'mandiri';
-            
-            if ($mode === 'klinik') {
-                // Mode Klinik: Arahkan ke dashboard pelayanan dengan parameter notifikasi
-                redirect("pelayanan.php?status=success&msg=terdaftar");
+            $target_url = ($mode === 'klinik') ? "pelayanan.php?status=success&msg=terdaftar" : "pemeriksaan.php?id_rm=" . $id_rm;
+
+            // Cek apakah request dari HTMX
+            if (isset($_SERVER['HTTP_HX_REQUEST'])) {
+                // Beritahu HTMX untuk melakukan redirect browser penuh
+                header("HX-Redirect: " . $target_url);
+                exit;
             } else {
-                // Mode Mandiri: Arahkan langsung ke form pemeriksaan menggunakan parameter id_rm
-                redirect("pemeriksaan.php?id_rm=" . $id_rm);
+                // Fallback untuk request biasa
+                redirect($target_url);
             }
 
         } catch (Exception $e) {

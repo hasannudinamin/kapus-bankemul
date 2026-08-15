@@ -137,14 +137,19 @@ function getActionButton($status, $id_rm) {
         Dashboard Operasional
     </h1>
     <div class="buttons">
-        <a href="pasien-tambah.php" class="button is-info is-light">
+        <a href="form-pasien.php" class="button is-info is-light">
             <span class="icon"><i class="mdi mdi-account-plus"></i></span>
             <span>Pasien Baru</span>
         </a>
-        <a href="kunjungan-baru.php" class="button is-primary">
-            <span class="icon"><i class="mdi mdi-plus-circle"></i></span>
-            <span>Buat Antrean</span>
-        </a>
+          <button 
+              hx-get="kunjungan-baru.php" 
+              hx-target="#modal-container"
+              class="button is-primary"
+              title="Buat Antrean">
+              <span class="icon"><i class="mdi mdi-plus-circle"></i></span>
+              <span>Buat Antrean</span>
+          </button>
+        <div id="modal-container"></div>
     </div>
 </div>
 
