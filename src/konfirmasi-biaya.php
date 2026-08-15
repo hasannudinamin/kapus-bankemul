@@ -30,7 +30,7 @@ $is_selesai = strtolower($kunjungan['status_layanan']) === 'selesai';
 
 // Mengambil daftar resep obat
 $resep_stmt = $pdo->prepare("
-    SELECT r.*, o.kode_obat, o.nama_obat, o.satuan, o.harga_satuan 
+    SELECT r.*, o.kode_obat, o.nama_obat, o.satuan, r.harga_jual AS harga_satuan
     FROM resep r
     JOIN obat o ON r.obat_id = o.id
     WHERE r.rekam_medik_id = ?

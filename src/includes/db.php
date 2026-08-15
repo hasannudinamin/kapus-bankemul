@@ -71,6 +71,7 @@ try {
         obat_id INTEGER NOT NULL,
         jumlah INTEGER NOT NULL CHECK(jumlah > 0),
         aturan_pakai TEXT,
+        harga_jual REAL,
         FOREIGN KEY (rekam_medik_id) REFERENCES rekam_medik(id) ON DELETE CASCADE,
         FOREIGN KEY (obat_id) REFERENCES obat(id) ON DELETE RESTRICT
     )");

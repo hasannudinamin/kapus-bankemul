@@ -29,7 +29,7 @@ if (!$data || strtolower($data['status_pembayaran']) !== 'lunas') {
 
 // Mengambil rincian obat yang diberikan
 $resep_stmt = $pdo->prepare("
-    SELECT r.jumlah, o.nama_obat, o.harga_satuan 
+    SELECT r.jumlah, o.nama_obat, r.harga_jual AS harga_satuan
     FROM resep r 
     JOIN obat o ON r.obat_id = o.id 
     WHERE r.rekam_medik_id = ?

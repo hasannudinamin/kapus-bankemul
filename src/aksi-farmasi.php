@@ -16,20 +16,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $pdo->beginTransaction();
-
-        // 1. Mengambil seluruh item resep terkait kunjungan ini
-        $stmt_resep = $pdo->prepare("SELECT obat_id, jumlah FROM resep WHERE rekam_medik_id = ?");
+        // 1. Mengambil seluruh item resep dan harga satuan saat ini dari tabel obat
+        $stmt_resep = $pdo->prepare("
+            SELECT r.id AS resep_id, r.obat_id, r.jumlah, o.harga_satuan 
+            FROM resep r
+            JOIN obat o ON r.obat_id = o.id
+            WHERE r.rekam_medik_id = ?
+        ");
         $stmt_resep->execute([$id_rm]);
         $resep_items = $stmt_resep->fetchAll();
 
-        // 2. Melakukan perulangan untuk memotong stok fisik di tabel obat
+        // 2. Melakukan perulangan untuk memotong stok fisik DAN mengunci harga jual
         $stmt_update_stok = $pdo->prepare("UPDATE obat SET stok = stok - ? WHERE id = ?");
-        
+
+        // Siapkan kueri untuk menyalin harga ke tabel resep
+        $stmt_update_harga = $pdo->prepare("UPDATE resep SET harga_jual = ? WHERE id = ?");
+
         foreach ($resep_items as $item) {
+            $resep_id = $item['resep_id'];
             $obat_id = $item['obat_id'];
             $jumlah = (int)$item['jumlah'];
+            $harga_saat_ini = (float)$item['harga_satuan']; // Harga yang berlaku di hari farmasi mengonfirmasi
 
+            // Eksekusi pemotongan stok di tabel obat
             $stmt_update_stok->execute([$jumlah, $obat_id]);
+
+            // Eksekusi penguncian harga pada tabel resep
+            $stmt_update_harga->execute([$harga_saat_ini, $resep_id]);
         }
 
         // 3. Memperbarui status layanan rekam medis dari 'farmasi' menjadi 'pembayaran'

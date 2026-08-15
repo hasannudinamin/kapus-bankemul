@@ -126,7 +126,7 @@ include 'includes/header.php';
                     <tbody>
                         <?php 
                         $can_process = true;
-                        $total_biaya_obat = 0;
+                        // $total_biaya_obat = 0;
 
                         if (empty($resep_list)): 
                         ?>
@@ -141,7 +141,7 @@ include 'includes/header.php';
                                 $jml_diminta = (int)$resep['jumlah'];
                                 $stok_tersedia = (int)$resep['stok'];
                                 $subtotal = $jml_diminta * (float)$resep['harga_satuan'];
-                                $total_biaya_obat += $subtotal;
+                                // $total_biaya_obat += $subtotal;
 
                                 // Logika validasi stok
                                 $is_sufficient = $stok_tersedia >= $jml_diminta;
