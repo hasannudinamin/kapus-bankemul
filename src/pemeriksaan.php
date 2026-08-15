@@ -164,7 +164,8 @@ include 'includes/header.php';
                                             hx-get="komponen-cari-obat.php?action=search"
                                             hx-target="#hasil-pencarian"
                                             hx-trigger="input changed delay:300ms, search"
-                                            hx-sync="this:replace">
+                      hx-sync="this:replace"
+                    hx-swap="innerHTML">
                                         <span class="icon is-small is-left"><i class="mdi mdi-magnify"></i></span>
                                     </div>
                                     <div id="hasil-pencarian" style="position: absolute; width: 100%; z-index: 1000; top: 100%; left: 0;"></div>

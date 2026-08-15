@@ -8,8 +8,9 @@ $action = $_GET['action'] ?? 'reset';
 if ($action === 'search') {
     $q = trim($_GET['q'] ?? '');
 
-    // Jangan tampilkan dropdown jika input kosong[cite: 10]
+    // Jangan tampilkan dropdown jika input kosong
     if (strlen($q) < 1) {
+        // echo ' ';
         exit;
     }
 
