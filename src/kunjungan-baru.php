@@ -32,11 +32,11 @@ if (isset($_GET['q'])) {
 ?>
 
 <div class="modal is-active">
-    <div class="modal-background" onclick="closeModal()"></div>
+    <div class="modal-background" onclick="document.getElementById('modal-container').innerHTML = ''"></div>
     <div class="modal-card">
         <header class="modal-card-head">
             <p class="modal-card-title is-size-5">Daftarkan Kunjungan Baru</p>
-            <button class="delete" aria-label="close" onclick="closeModal()"></button>
+            <button class="delete" aria-label="close" onclick="document.getElementById('modal-container').innerHTML = ''"></button>
         </header>
         <section class="modal-card-body">
             <div class="field">
@@ -55,15 +55,3 @@ if (isset($_GET['q'])) {
     </div>
 </div>
 
-<script>
-    function closeModal() {
-        const modalContainer = document.getElementById('modal-container');
-        if (modalContainer) modalContainer.innerHTML = '';
-    }
-
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeModal();
-        }
-    });
-</script>

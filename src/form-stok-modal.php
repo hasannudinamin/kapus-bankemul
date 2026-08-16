@@ -23,14 +23,14 @@ if (!$obat) {
 
 <div class="modal is-active" id="restock-modal">
     <!-- Latar belakang modal, klik untuk menutup -->
-    <div class="modal-background" onclick="closeModal()"></div>
+    <div class="modal-background" onclick="document.getElementById('modal-container').innerHTML = ''"></div>
     <div class="modal-card">
         <header class="modal-card-head">
             <p class="modal-card-title is-size-5 has-text-weight-bold">
                 <span class="icon has-text-success mr-2"><i class="mdi mdi-package-down"></i></span>
                 Restock Obat
             </p>
-            <button class="delete" aria-label="close" type="button" onclick="closeModal()"></button>
+            <button class="delete" aria-label="close" type="button" onclick="document.getElementById('modal-container').innerHTML = ''"></button>
         </header>
         <section class="modal-card-body">
             <!-- Formulir akan mengarah ke aksi-stok.php untuk pemrosesan database -->
@@ -68,7 +68,7 @@ if (!$obat) {
             </form>
         </section>
         <footer class="modal-card-foot is-justify-content-flex-end" style="background-color: #fafafa;">
-            <button class="button" type="button" onclick="closeModal()">Batal</button>
+            <button class="button" type="button" onclick="document.getElementById('modal-container').innerHTML = ''">Batal</button>
             <button class="button is-success" type="submit" form="form-restock">
                 <span class="icon"><i class="mdi mdi-content-save"></i></span>
                 <span>Simpan Stok Masuk</span>
@@ -77,19 +77,3 @@ if (!$obat) {
     </div>
 </div>
 
-<script>
-    // Fungsi sederhana untuk menghapus modal dari DOM
-    function closeModal() {
-        const modalContainer = document.getElementById('modal-container');
-        if (modalContainer) {
-            modalContainer.innerHTML = '';
-        }
-    }
-
-    // Menutup modal jika tombol Escape ditekan
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeModal();
-        }
-    });
-</script>
