@@ -27,7 +27,7 @@ if (!$kunjungan) {
 $is_locked = in_array(strtolower($kunjungan['status_layanan']), ['farmasi', 'pembayaran', 'selesai']);
 
 // Variabel Deteksi Draft: True jika status belum terkunci dan minimal satu field terisi
-$is_draft = !$is_locked && (trim($kunjungan['keluhan'] ?? '') !== '' || trim($kunjungan['diagnosa'] ?? '') !== '' || trim($kunjungan['tindakan'] ?? '') !== '');
+$is_draft = strtolower($kunjungan['status_layanan']) === 'pemeriksaan';
 
 // Mengambil daftar resep yang sudah ditambahkan pada kunjungan ini
 $resep_stmt = $pdo->prepare("

@@ -28,13 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         if ($action === 'simpan_draft') {
-            // Menyimpan data tanpa mengubah status layanan
-            $stmt = $pdo->prepare("UPDATE rekam_medik SET keluhan = ?, diagnosa = ?, tindakan = ? WHERE id = ?");
+            // Menyimpan data dan mengubah status layanan menjadi 'pemeriksaan' sebagai penanda draft
+            $stmt = $pdo->prepare("UPDATE rekam_medik SET keluhan = ?, diagnosa = ?, tindakan = ?, status_layanan = 'pemeriksaan' WHERE id = ?");
             $stmt->execute([$keluhan, $diagnosa, $tindakan, $id_rm]);
             
             // Tetap di halaman pemeriksaan agar dokter bisa melanjutkan pengisian
             redirect("pemeriksaan.php?id_rm=" . $id_rm . "&status=draft");
-            
         } elseif ($action === 'selesai_pemeriksaan') {
             // Menyimpan data dan memajukan status ke 'farmasi'
             $stmt = $pdo->prepare("UPDATE rekam_medik SET keluhan = ?, diagnosa = ?, tindakan = ?, status_layanan = 'farmasi' WHERE id = ?");

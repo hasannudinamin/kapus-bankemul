@@ -33,9 +33,9 @@ if ($filter_status !== '') {
 }
 
 // Mengambil data rekam medik yang digabung dengan data pasien (menambahkan keluhan, diagnosa, tindakan untuk deteksi draft)
+// Mengambil data rekam medik yang digabung dengan data pasien
 $sql = "
     SELECT rm.id AS id_rm, rm.tanggal_kunjungan, rm.status_layanan, 
-           rm.keluhan, rm.diagnosa, rm.tindakan,
            p.id AS pasien_id, p.nama_lengkap, p.no_rm, p.jenis_kelamin, p.tanggal_lahir, p.alamat, p.no_telp
     FROM rekam_medik rm
     JOIN pasien p ON rm.pasien_id = p.id
@@ -73,8 +73,8 @@ foreach ($kunjungan_list as $index => $row) :
     elseif ($status === 'pembayaran') $tag_color = 'is-primary';
     elseif ($status === 'selesai') $tag_color = 'is-success';
 
-    // Deteksi Draft: True jika status pemeriksaan dan minimal satu field terisi
-    $is_draft = ($status === 'pemeriksaan') && (trim($row['keluhan'] ?? '') !== '' || trim($row['diagnosa'] ?? '') !== '' || trim($row['tindakan'] ?? '') !== '');
+    // Deteksi Draft: True jika status layanan saat ini adalah pemeriksaan
+    $is_draft = ($status === 'pemeriksaan');
 
     $umur = hitung_umur($row['tanggal_lahir'], 'Tahun');
     $jk = $row['jenis_kelamin'] === 'P' ? 'Perempuan' : ($row['jenis_kelamin'] === 'L' ? 'Laki-laki' : '-');
