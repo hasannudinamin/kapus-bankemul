@@ -32,9 +32,10 @@ if ($filter_status !== '') {
     $params[] = $filter_status;
 }
 
-// Mengambil data rekam medik yang digabung dengan data pasien
+// Mengambil data rekam medik yang digabung dengan data pasien (menambahkan keluhan, diagnosa, tindakan untuk deteksi draft)
 $sql = "
     SELECT rm.id AS id_rm, rm.tanggal_kunjungan, rm.status_layanan, 
+           rm.keluhan, rm.diagnosa, rm.tindakan,
            p.id AS pasien_id, p.nama_lengkap, p.no_rm, p.jenis_kelamin, p.tanggal_lahir, p.alamat, p.no_telp
     FROM rekam_medik rm
     JOIN pasien p ON rm.pasien_id = p.id
@@ -72,6 +73,9 @@ foreach ($kunjungan_list as $index => $row) :
     elseif ($status === 'pembayaran') $tag_color = 'is-primary';
     elseif ($status === 'selesai') $tag_color = 'is-success';
 
+    // Deteksi Draft: True jika status pemeriksaan dan minimal satu field terisi
+    $is_draft = ($status === 'pemeriksaan') && (trim($row['keluhan'] ?? '') !== '' || trim($row['diagnosa'] ?? '') !== '' || trim($row['tindakan'] ?? '') !== '');
+
     $umur = hitung_umur($row['tanggal_lahir'], 'Tahun');
     $jk = $row['jenis_kelamin'] === 'P' ? 'Perempuan' : ($row['jenis_kelamin'] === 'L' ? 'Laki-laki' : '-');
 ?>
@@ -97,6 +101,9 @@ foreach ($kunjungan_list as $index => $row) :
                 <div class="content is-small mb-0">
                     <div class="tags mb-3">
                         <span class="tag <?= $tag_color ?> is-light font-weight-bold">Status: <?= e(ucfirst($status)) ?></span>
+                        <?php if ($is_draft): ?>
+                            <span class="tag is-success is-light font-weight-bold">Draft</span>
+                        <?php endif; ?>
                     </div>
 
                     <!-- Menggunakan tata letak tabel selaras dengan daftar-pasien.php -->
