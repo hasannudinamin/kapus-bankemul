@@ -26,6 +26,9 @@ if (!$kunjungan) {
 // Variabel Pengunci Keamanan: True jika pasien sudah melewati tahap pemeriksaan
 $is_locked = in_array(strtolower($kunjungan['status_layanan']), ['farmasi', 'pembayaran', 'selesai']);
 
+// Variabel Deteksi Draft: True jika status belum terkunci dan minimal satu field terisi
+$is_draft = !$is_locked && (trim($kunjungan['keluhan'] ?? '') !== '' || trim($kunjungan['diagnosa'] ?? '') !== '' || trim($kunjungan['tindakan'] ?? '') !== '');
+
 // Mengambil daftar resep yang sudah ditambahkan pada kunjungan ini
 $resep_stmt = $pdo->prepare("
     SELECT r.*, o.nama_obat, o.satuan 
@@ -62,6 +65,14 @@ include 'includes/header.php';
     </div>
 </div>
 
+<?php if (isset($_GET['status']) && $_GET['status'] === 'draft'): ?>
+<div class="notification is-success is-light mb-4">
+    <button class="delete" onclick="this.parentElement.remove()"></button>
+    <span class="icon mr-1"><i class="mdi mdi-check-circle-outline"></i></span>
+    <strong>Berhasil!</strong> Draft catatan medis berhasil disimpan.
+</div>
+<?php endif; ?>
+
 <?php if ($is_locked): ?>
 <div class="notification is-warning is-light mb-4">
     <span class="icon mr-1"><i class="mdi mdi-lock-outline"></i></span>
@@ -78,9 +89,16 @@ include 'includes/header.php';
                     <span class="icon"><i class="mdi mdi-clipboard-text-outline"></i></span>
                     Catatan Medis
                 </h4>
-                <span class="tag <?= $kunjungan['status_layanan'] === 'pemeriksaan' ? 'is-info' : 'is-warning' ?> is-light">
-                    Status: <?= e(ucfirst($kunjungan['status_layanan'])) ?>
-                </span>
+                <div>
+                    <span class="tag <?= $kunjungan['status_layanan'] === 'pemeriksaan' ? 'is-info' : 'is-warning' ?> is-light">
+                        Status: <?= e(ucfirst($kunjungan['status_layanan'])) ?>
+                    </span>
+                    <?php if ($is_draft): ?>
+                    <span class="tag is-success is-light ml-2">
+                        Draft Tersimpan
+                    </span>
+                    <?php endif; ?>
+                </div>
             </div>
 
             <!-- Form terpisah murni untuk update data keluhan, diagnosa, tindakan -->
@@ -119,7 +137,7 @@ include 'includes/header.php';
                     <div class="control">
                         <button type="submit" name="action" value="simpan_draft" class="button is-light is-info">
                             <span class="icon"><i class="mdi mdi-content-save-outline"></i></span>
-                            <span>Simpan Draft</span>
+                            <span><?= $is_draft ? 'Perbarui Draft' : 'Simpan Draft' ?></span>
                         </button>
                     </div>
                     <div class="control">
