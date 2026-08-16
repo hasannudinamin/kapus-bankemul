@@ -194,7 +194,46 @@ if ($is_htmx) {
 // 5. Render halaman penuh jika diakses langsung via browser
 $page_title = 'Dashboard Pelayanan & Antrean';
 include 'includes/header.php';
+
+// Memproses pesan notifikasi dari parameter GET
+$msg = isset($_GET['msg']) ? trim($_GET['msg']) : '';
+$notification_html = '';
+
+if ($msg !== '') {
+    $notif_title = '';
+    $notif_text = '';
+    
+    switch ($msg) {
+        case 'terdaftar':
+            $notif_title = 'Pasien Terdaftar!';
+            $notif_text = 'Kunjungan pasien berhasil didaftarkan dan masuk ke antrean.';
+            break;
+        case 'pemeriksaan_selesai':
+            $notif_title = 'Pemeriksaan Selesai!';
+            $notif_text = 'Data pemeriksaan medis telah disimpan. Pasien diarahkan ke tahap selanjutnya.';
+            break;
+        case 'farmasi_selesai':
+            $notif_title = 'Farmasi Selesai!';
+            $notif_text = 'Obat telah divalidasi dan diserahkan kepada pasien.';
+            break;
+        case 'pembayaran_selesai':
+            $notif_title = 'Transaksi Lunas & Selesai!';
+            $notif_text = 'Pembayaran untuk kunjungan ini telah dikonfirmasi. Anda dapat mencetak struk pembayaran di bawah ini.';
+            break;
+    }
+
+    if ($notif_title !== '') {
+        $notification_html = '
+        <div class="notification is-success is-light mb-4">
+            <button class="delete" onclick="this.parentElement.remove()"></button>
+            <span class="icon mr-1"><i class="mdi mdi-check-circle-outline"></i></span>
+            <strong>' . htmlspecialchars($notif_title) . '</strong> ' . htmlspecialchars($notif_text) . '
+        </div>';
+    }
+}
 ?>
+
+<?= $notification_html ?>
 
 <div class="columns is-vcentered mb-5 is-mobile">
     <div class="column">
