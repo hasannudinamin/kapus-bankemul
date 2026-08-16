@@ -67,7 +67,6 @@ while ($row = $stmt_status->fetch()) {
     }
 }
 
-
 // 3. Kueri Antrean Pasien Hari Ini
 // Diurutkan berdasarkan alur layanan agar yang masih awal antrean berada di atas
 $stmt_antrean = $pdo->query("
@@ -88,7 +87,6 @@ $stmt_antrean = $pdo->query("
         rm.tanggal_kunjungan ASC
 ");
 $antrean = $stmt_antrean->fetchAll();
-
 
 // 4. Kueri Obat Kritis
 $stmt_obat_kritis = $pdo->query("SELECT nama_obat, stok, satuan FROM obat WHERE stok < 10 ORDER BY stok ASC LIMIT 5");
@@ -182,16 +180,25 @@ function getActionButton($status, $id_rm) {
 </div>
 
 <div class="columns is-desktop is-variable is-4 mb-5">
-    <!-- Tabel Antrean Kiri -->
+<!-- Tabel Antrean Kiri -->
     <div class="column is-8">
         <div class="box h-100">
-            <h4 class="title is-5 mb-4 has-text-grey-dark border-bottom pb-2">
-                <span class="icon"><i class="mdi mdi-clipboard-text-clock"></i></span> Antrean Pasien Hari Ini
-            </h4>
+            <!-- Header yang sudah ditambahkan tombol Lihat Semua -->
+            <div class="is-flex is-justify-content-space-between is-align-items-center mb-4 border-bottom pb-2">
+                <h4 class="title is-5 mb-0 has-text-grey-dark">
+                    <span class="icon"><i class="mdi mdi-clipboard-text-clock"></i></span> Antrean Aktif Hari Ini
+                </h4>
+                <a href="pelayanan.php" class="button is-small is-light is-info">
+                    <span>Lihat Semua</span>
+                    <span class="icon is-small"><i class="mdi mdi-arrow-right"></i></span>
+                </a>
+            </div>
             
-            <div class="table-container">
-                <table class="table is-fullwidth is-striped is-hoverable is-narrow">
-                    <thead>
+            <!-- Penambahan max-height dan overflow-y -->
+            <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+                <table class="table is-fullwidth is-striped is-hoverable is-narrow mb-0">
+                    <!-- Penambahan posisi sticky pada header tabel -->
+                    <thead style="position: sticky; top: 0; background-color: white; z-index: 1; box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1);">
                         <tr>
                             <th>Waktu</th>
                             <th>Pasien (No. RM)</th>
