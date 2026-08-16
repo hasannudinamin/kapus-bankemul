@@ -156,7 +156,7 @@ include 'includes/header.php';
                         elseif ($rm['status_layanan'] === 'pemeriksaan') $tag_color = 'is-info';
                     ?>
                         <div class="pb-5" style="border-left: 2px solid #e0e0e0; padding-left: 20px; position: relative;">
-                            <span class="icon is-small has-text-primary" style="position: absolute; left: -14px; top: 0; background-color: #fff;">
+                            <span class="icon is-small has-text-primary" style="position: absolute; left: -9px; top: 7px; background-color: #fff;">
                                 <i class="mdi mdi-record-circle mdi-24px"></i>
                             </span>
 
@@ -168,7 +168,7 @@ include 'includes/header.php';
                                 
                                 <div class="buttons is-right mb-0">
                                     <?php if ($rm['status_layanan'] !== 'selesai') : ?>
-                                        <a href="kunjungan.php?id_rm=<?= e($rm['id']) ?>" class="button is-small is-info is-light">
+                                        <a href="pemeriksaan.php?id_rm=<?= e($rm['id']) ?>" class="button is-small is-info is-light">
                                             <span class="icon"><i class="mdi mdi-stethoscope"></i></span>
                                             <span>Proses</span>
                                         </a>
