@@ -23,9 +23,10 @@ if (!$kunjungan) {
     die("Data kunjungan tidak ditemukan.");
 }
 
-// Mengambil daftar resep beserta informasi stok fisik dari tabel obat
+// Mengambil daftar resep beserta informasi stok fisik utama dan ED Terdekat dari obat_batch
 $resep_stmt = $pdo->prepare("
-    SELECT r.*, o.kode_obat, o.nama_obat, o.satuan, o.stok, o.harga_satuan 
+    SELECT r.*, o.kode_obat, o.nama_obat, o.satuan, o.stok, o.harga_satuan,
+           (SELECT MIN(tanggal_kedaluwarsa) FROM obat_batch WHERE obat_id = o.id AND stok_batch > 0) AS ed_terdekat
     FROM resep r
     JOIN obat o ON r.obat_id = o.id
     WHERE r.rekam_medik_id = ?
@@ -126,7 +127,6 @@ include 'includes/header.php';
                     <tbody>
                         <?php 
                         $can_process = true;
-                        // $total_biaya_obat = 0;
 
                         if (empty($resep_list)): 
                         ?>
@@ -140,9 +140,7 @@ include 'includes/header.php';
                             foreach ($resep_list as $resep) : 
                                 $jml_diminta = (int)$resep['jumlah'];
                                 $stok_tersedia = (int)$resep['stok'];
-                                $subtotal = $jml_diminta * (float)$resep['harga_satuan'];
-                                // $total_biaya_obat += $subtotal;
-
+                                
                                 // Logika validasi stok
                                 $is_sufficient = $stok_tersedia >= $jml_diminta;
                                 if (!$is_sufficient) {
@@ -156,7 +154,14 @@ include 'includes/header.php';
                             <tr>
                                 <td class="is-vcentered">
                                     <p class="has-text-weight-bold mb-0"><?= e($resep['nama_obat']) ?></p>
-                                    <p class="is-size-7 has-text-grey"><?= e($resep['kode_obat']) ?></p>
+                                    <p class="is-size-7 has-text-grey mb-1"><?= e($resep['kode_obat']) ?></p>
+                                    
+                                    <?php if (!empty($resep['ed_terdekat'])): ?>
+                                        <p class="is-size-7 has-text-info mt-1" style="line-height: 1.2;">
+                                            <span class="icon is-small"><i class="mdi mdi-information-outline"></i></span>
+                                            Tangal Kedaluwarsa: <strong><?= date('d/m/Y', strtotime($resep['ed_terdekat'])) ?></strong>
+                                        </p>
+                                    <?php endif; ?>
                                 </td>
                                 <td class="is-vcentered"><?= e($resep['aturan_pakai']) ?></td>
                                 <td class="is-vcentered has-text-centered has-text-weight-bold">
