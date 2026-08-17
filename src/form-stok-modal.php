@@ -28,12 +28,12 @@ if (!$obat) {
         <header class="modal-card-head">
             <p class="modal-card-title is-size-5 has-text-weight-bold">
                 <span class="icon has-text-success mr-2"><i class="mdi mdi-package-down"></i></span>
-                Restock Obat
+                Restock Obat (Batch Baru)
             </p>
             <button class="delete" aria-label="close" type="button" onclick="document.getElementById('modal-container').innerHTML = ''"></button>
         </header>
         <section class="modal-card-body">
-            <!-- Formulir akan mengarah ke aksi-stok.php untuk pemrosesan database -->
+            <!-- Formulir akan mengarah ke aksi-obat.php untuk pemrosesan database[cite: 3] -->
             <form id="form-restock" action="aksi-obat.php" method="POST">
                 <input type="hidden" name="action" value="restock">
                 <input type="hidden" name="id" value="<?= e($obat['id']) ?>">
@@ -48,22 +48,68 @@ if (!$obat) {
                     </p>
                 </div>
 
-                <div class="field">
-                    <label class="label">Jumlah Stok Masuk (Tambahan) <span class="has-text-danger">*</span></label>
-                    <div class="control has-icons-left">
-                        <input 
-                            class="input is-success is-medium" 
-                            type="number" 
-                            name="jumlah_masuk" 
-                            required 
-                            min="1" 
-                            placeholder="Contoh: 50" 
-                            autofocus>
-                        <span class="icon is-left"><i class="mdi mdi-plus-box"></i></span>
+                <div class="columns is-mobile is-multiline mb-0">
+                    <!-- Input Jumlah Masuk -->
+                    <div class="column is-6-desktop is-12-mobile pb-1">
+                        <div class="field">
+                            <label class="label is-small">Jumlah Stok Masuk <span class="has-text-danger">*</span></label>
+                            <div class="control has-icons-left has-icons-right">
+                                <input id="input-jumlah" class="input is-success" type="number" name="jumlah_masuk" required min="1" placeholder="Contoh: 50" autofocus>
+                                <span class="icon is-small is-left"><i class="mdi mdi-plus-box"></i></span>
+                                <span class="icon is-small is-right has-text-grey" style="width: auto; padding-right: 15px;"><?= e($obat['satuan']) ?></span>
+                            </div>
+                        </div>
                     </div>
-                    <p class="help has-text-grey">
-                        <i class="mdi mdi-information-outline"></i> Masukkan jumlah barang baru yang masuk ke gudang. Angka ini akan otomatis ditambahkan ke stok saat ini.
-                    </p>
+
+                    <!-- Input Harga Beli Total (Bantuan Kalkulasi) -->
+                    <div class="column is-6-desktop is-12-mobile pb-1">
+                        <div class="field">
+                            <label class="label is-small">Harga Beli Total (Opsional)</label>
+                            <div class="control has-icons-left">
+                                <input id="input-total" class="input is-info" type="number" step="any" min="0" placeholder="Total harga faktur...">
+                                <span class="icon is-small is-left"><i class="mdi mdi-calculator"></i></span>
+                            </div>
+                            <p class="help has-text-grey is-size-7 mt-1">Isi untuk hitung otomatis harga per satuan.</p>
+                        </div>
+                    </div>
+
+                    <!-- Input Harga Beli Satuan -->
+                    <div class="column is-6-desktop is-12-mobile pb-1">
+                        <div class="field">
+                            <label class="label is-small">Harga Beli (Per <?= e($obat['satuan']) ?>) <span class="has-text-danger">*</span></label>
+                            <div class="control has-icons-left">
+                                <input id="input-satuan" class="input" type="number" step="any" name="harga_beli" required min="0" placeholder="Contoh: 1500">
+                                <span class="icon is-small is-left"><i class="mdi mdi-cash"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input Tanggal Kedaluwarsa -->
+                    <div class="column is-6-desktop is-12-mobile pb-1">
+                        <div class="field">
+                            <label class="label is-small">Tanggal Kedaluwarsa (ED) <span class="has-text-danger">*</span></label>
+                            <div class="control has-icons-left">
+                                <input class="input" type="date" name="tanggal_kedaluwarsa" required min="<?= date('Y-m-d') ?>">
+                                <span class="icon is-small is-left"><i class="mdi mdi-calendar-clock"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input Nomor Batch -->
+                    <div class="column is-12-desktop is-12-mobile pb-1">
+                        <div class="field">
+                            <label class="label is-small">No. Batch Pabrik</label>
+                            <div class="control has-icons-left">
+                                <input class="input" type="text" name="no_batch" placeholder="Opsional (kosongkan jika tidak ada)">
+                                <span class="icon is-small is-left"><i class="mdi mdi-barcode"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notification is-warning is-light is-size-7 mt-3 py-2 px-3">
+                    <span class="icon"><i class="mdi mdi-information-outline"></i></span>
+                    Sistem akan mencatat kedatangan ini sebagai <strong>Batch Baru</strong> dan akan dikeluarkan ke pasien menggunakan metode <strong>FEFO</strong> (First Expired, First Out).
                 </div>
             </form>
         </section>
@@ -77,3 +123,40 @@ if (!$obat) {
     </div>
 </div>
 
+<script>
+    // Logika Kalkulasi Otomatis Harga Satuan
+    const inputJumlah = document.getElementById('input-jumlah');
+    const inputTotal = document.getElementById('input-total');
+    const inputSatuan = document.getElementById('input-satuan');
+
+    function hitungHargaSatuan() {
+        const jumlah = parseFloat(inputJumlah.value) || 0;
+        const total = parseFloat(inputTotal.value) || 0;
+
+        // Melakukan kalkulasi hanya jika pengguna memasukkan angka valid
+        if (jumlah > 0 && total > 0) {
+            const hargaPerSatuan = total / jumlah;
+            // Menghilangkan desimal berlebih jika angkanya bulat
+            inputSatuan.value = Number.isInteger(hargaPerSatuan) ? hargaPerSatuan : hargaPerSatuan.toFixed(2);
+        }
+    }
+
+    // Memicu kalkulasi saat input "Jumlah Masuk" atau "Harga Beli Total" berubah
+    inputJumlah.addEventListener('input', hitungHargaSatuan);
+    inputTotal.addEventListener('input', hitungHargaSatuan);
+
+    // Fungsi sederhana untuk menghapus modal dari DOM[cite: 3]
+    function closeModal() {
+        const modalContainer = document.getElementById('modal-container');
+        if (modalContainer) {
+            modalContainer.innerHTML = '';
+        }
+    }
+
+    // Menutup modal jika tombol Escape ditekan[cite: 3]
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
+</script>

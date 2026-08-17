@@ -13,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $satuan = trim($_POST['satuan'] ?? '');
         // Memastikan input harga dan stok diformat sebagai angka untuk menghindari error tipe data
         $harga_satuan = (float)($_POST['harga_satuan'] ?? 0);
-        $stok = (int)($_POST['stok'] ?? 0);
 
         try {
             $pdo->beginTransaction();
@@ -27,9 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $kode_obat = 'OBT-' . str_pad($next_kode, 4, '0', STR_PAD_LEFT);
             }
 
-            // Menyisipkan seluruh nilai awal termasuk stok ke dalam database
-            $stmt = $pdo->prepare("INSERT INTO obat (kode_obat, nama_obat, satuan, harga_satuan, stok) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$kode_obat, $nama_obat, $satuan, $harga_satuan, $stok]);
+            // Memaksa nilai stok menjadi 0 pada tabel master
+            $stmt = $pdo->prepare("INSERT INTO obat (kode_obat, nama_obat, satuan, harga_satuan, stok) VALUES (?, ?, ?, ?, 0)");
+            $stmt->execute([$kode_obat, $nama_obat, $satuan, $harga_satuan]);
 
             $pdo->commit();
             redirect("manajemen-obat.php");
@@ -79,14 +78,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($action === 'restock') {
         $id = $_POST['id'] ?? null;
         $jumlah_masuk = (int)($_POST['jumlah_masuk'] ?? 0);
+        
+        // Menangkap parameter baru dari form modal restock
+        $harga_beli = (float)($_POST['harga_beli'] ?? 0);
+        $tanggal_kedaluwarsa = $_POST['tanggal_kedaluwarsa'] ?? date('Y-m-d');
+        $no_batch = trim($_POST['no_batch'] ?? '');
+        
+        // Mengambil ID User yang sedang login untuk riwayat log
+        $user_id = $_SESSION['user_id'] ?? null;
 
         if ($id && $jumlah_masuk > 0) {
             try {
                 $pdo->beginTransaction();
 
-                // Menambahkan jumlah stok yang ada di database secara aman
-                $stmt = $pdo->prepare("UPDATE obat SET stok = stok + ? WHERE id = ?");
-                $stmt->execute([$jumlah_masuk, $id]);
+                // 1. Simpan inventaris fisik ke tabel obat_batch
+                $stmt_batch = $pdo->prepare("INSERT INTO obat_batch (obat_id, no_batch, tanggal_kedaluwarsa, stok_batch, harga_beli) VALUES (?, ?, ?, ?, ?)");
+                $stmt_batch->execute([$id, $no_batch, $tanggal_kedaluwarsa, $jumlah_masuk, $harga_beli]);
+                
+                // Menangkap ID batch yang baru saja dibuat
+                $id_batch = $pdo->lastInsertId();
+
+                // 2. Simpan ke tabel log_stok sebagai riwayat pergerakan (Kartu Stok)
+                $stmt_log = $pdo->prepare("INSERT INTO log_stok (obat_id, obat_batch_id, user_id, jenis_transaksi, jumlah, keterangan) VALUES (?, ?, ?, 'masuk', ?, 'Penerimaan stok batch baru')");
+                $stmt_log->execute([$id, $id_batch, $user_id, $jumlah_masuk]);
+
+                // 3. Update total akumulasi stok pada tabel master obat
+                $stmt_update = $pdo->prepare("UPDATE obat SET stok = stok + ? WHERE id = ?");
+                $stmt_update->execute([$jumlah_masuk, $id]);
 
                 $pdo->commit();
                 redirect("manajemen-obat.php");
@@ -95,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 die("Gagal memperbarui stok: " . $e->getMessage());
             }
         } else {
-            die("Jumlah stok masuk tidak valid.");
+            die("Data stok masuk tidak valid.");
         }
     } elseif ($action === 'delete') {
         $id = $_POST['id'];
