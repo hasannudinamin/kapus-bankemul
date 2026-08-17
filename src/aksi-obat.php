@@ -115,6 +115,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             die("Data stok masuk tidak valid.");
         }
+
+    } elseif ($action === 'opname') {
+        $id = $_POST['id'] ?? null;
+        $obat_batch_id = $_POST['obat_batch_id'] ?? null;
+        $jenis_penyesuaian = $_POST['jenis_penyesuaian'] ?? '';
+        $jumlah = (int)($_POST['jumlah'] ?? 0);
+        $keterangan = trim($_POST['keterangan'] ?? '');
+        $user_id = $_SESSION['user_id'] ?? null;
+
+        if ($id && $obat_batch_id && $jumlah > 0 && in_array($jenis_penyesuaian, ['penambahan', 'pengurangan'])) {
+            try {
+                $pdo->beginTransaction();
+
+                // Menentukan operator query dan jumlah yang dicatat pada log berdasarkan jenis penyesuaian
+                if ($jenis_penyesuaian === 'pengurangan') {
+                    // Validasi: Pastikan jumlah yang dikurangi tidak melebihi sisa stok batch saat ini
+                    $stmt_cek = $pdo->prepare("SELECT stok_batch FROM obat_batch WHERE id = ?");
+                    $stmt_cek->execute([$obat_batch_id]);
+                    $stok_sekarang = (int)$stmt_cek->fetchColumn();
+
+                    if ($stok_sekarang < $jumlah) {
+                        throw new Exception("Jumlah pengurangan melebihi sisa stok pada batch tersebut.");
+                    }
+
+                    $stmt_batch = $pdo->prepare("UPDATE obat_batch SET stok_batch = stok_batch - ? WHERE id = ?");
+                    $stmt_obat = $pdo->prepare("UPDATE obat SET stok = stok - ? WHERE id = ?");
+                    
+                    // Menyimpan angka sebagai negatif di log agar terlihat perbedaannya
+                    $jumlah_log = -$jumlah; 
+                } else {
+                    $stmt_batch = $pdo->prepare("UPDATE obat_batch SET stok_batch = stok_batch + ? WHERE id = ?");
+                    $stmt_obat = $pdo->prepare("UPDATE obat SET stok = stok + ? WHERE id = ?");
+                    
+                    // Menyimpan angka sebagai positif di log
+                    $jumlah_log = $jumlah;
+                }
+
+                // 1. Eksekusi pembaruan stok spesifik pada batch
+                $stmt_batch->execute([$jumlah, $obat_batch_id]);
+                
+                // 2. Eksekusi pembaruan stok akumulasi pada tabel master
+                $stmt_obat->execute([$jumlah, $id]);
+
+                // 3. Catat aktivitas ini ke log_stok dengan jenis 'penyesuaian'
+                $stmt_log = $pdo->prepare("INSERT INTO log_stok (obat_id, obat_batch_id, user_id, jenis_transaksi, jumlah, keterangan) VALUES (?, ?, ?, 'penyesuaian', ?, ?)");
+                $stmt_log->execute([$id, $obat_batch_id, $user_id, $jumlah_log, $keterangan]);
+
+                $pdo->commit();
+                
+                // Mengarahkan kembali ke halaman detail obat
+                redirect("obat.php?id=" . $id);
+            } catch (Exception $e) {
+                $pdo->rollBack();
+                die("Gagal melakukan penyesuaian stok: " . $e->getMessage());
+            }
+        } else {
+            die("Data penyesuaian stok tidak valid.");
+        }
     } elseif ($action === 'delete') {
         $id = $_POST['id'];
 

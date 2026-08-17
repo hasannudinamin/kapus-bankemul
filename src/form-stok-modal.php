@@ -144,19 +144,4 @@ if (!$obat) {
     // Memicu kalkulasi saat input "Jumlah Masuk" atau "Harga Beli Total" berubah
     inputJumlah.addEventListener('input', hitungHargaSatuan);
     inputTotal.addEventListener('input', hitungHargaSatuan);
-
-    // Fungsi sederhana untuk menghapus modal dari DOM[cite: 3]
-    function closeModal() {
-        const modalContainer = document.getElementById('modal-container');
-        if (modalContainer) {
-            modalContainer.innerHTML = '';
-        }
-    }
-
-    // Menutup modal jika tombol Escape ditekan[cite: 3]
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeModal();
-        }
-    });
 </script>
