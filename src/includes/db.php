@@ -49,7 +49,16 @@ try {
         stok INTEGER DEFAULT 0 CHECK(stok >= 0),
         harga_satuan REAL DEFAULT 0
     )");
-
+    // 3.1. Obat Batch Table (Manajemen Kedaluwarsa, FEFO & HPP)
+    $pdo->exec("CREATE TABLE IF NOT EXISTS obat_batch (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        obat_id INTEGER NOT NULL,
+        no_batch TEXT,
+        tanggal_kedaluwarsa DATE NOT NULL,
+        stok_batch INTEGER DEFAULT 0 CHECK(stok_batch >= 0),
+        harga_beli REAL DEFAULT 0,
+        FOREIGN KEY (obat_id) REFERENCES obat(id) ON DELETE CASCADE
+    )");
     // 4. Rekam Medik Table
     $pdo->exec("CREATE TABLE IF NOT EXISTS rekam_medik (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -75,7 +84,16 @@ try {
         FOREIGN KEY (rekam_medik_id) REFERENCES rekam_medik(id) ON DELETE CASCADE,
         FOREIGN KEY (obat_id) REFERENCES obat(id) ON DELETE RESTRICT
     )");
-
+    // 5.1. Resep Detail Batch Table (Jembatan Pemotongan Multi-Batch per Resep)
+    $pdo->exec("CREATE TABLE IF NOT EXISTS resep_detail_batch (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        resep_id INTEGER NOT NULL,
+        obat_batch_id INTEGER NOT NULL,
+        jumlah INTEGER NOT NULL CHECK(jumlah > 0),
+        harga_beli REAL DEFAULT 0,
+        FOREIGN KEY (resep_id) REFERENCES resep(id) ON DELETE CASCADE,
+        FOREIGN KEY (obat_batch_id) REFERENCES obat_batch(id) ON DELETE RESTRICT
+    )");
     // 6. Keuangan Table
     $pdo->exec("CREATE TABLE IF NOT EXISTS keuangan (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -88,7 +106,20 @@ try {
         status_pembayaran TEXT DEFAULT 'belum_bayar',
         FOREIGN KEY (rekam_medik_id) REFERENCES rekam_medik(id) ON DELETE CASCADE
     )");
-
+    // 7. Log Stok Table (Kartu Stok & Pergerakan Harian/Stock Opname)
+    $pdo->exec("CREATE TABLE IF NOT EXISTS log_stok (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        obat_id INTEGER NOT NULL,
+        obat_batch_id INTEGER,
+        user_id INTEGER,
+        jenis_transaksi TEXT NOT NULL, -- 'masuk', 'keluar', atau 'penyesuaian'
+        jumlah INTEGER NOT NULL,
+        keterangan TEXT,
+        tanggal DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (obat_id) REFERENCES obat(id) ON DELETE CASCADE,
+        FOREIGN KEY (obat_batch_id) REFERENCES obat_batch(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+    )");
     // Seed default admin user if the users table is empty
     $stmt = $pdo->query("SELECT COUNT(*) FROM users");
     if ($stmt->fetchColumn() == 0) {
