@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $resep_items = $stmt_resep->fetchAll();
 
         // Persiapan kueri-kueri di luar loop agar lebih efisien (Prepared Statements)
-        
+
         // Kueri FEFO: Ambil batch yang masih ada stoknya, urut berdasarkan ED terdekat
         $stmt_get_batches = $pdo->prepare("
             SELECT id, stok_batch, harga_beli 
@@ -43,19 +43,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE obat_id = ? AND stok_batch > 0 
             ORDER BY tanggal_kedaluwarsa ASC, id ASC
         ");
-        
+
         // Kueri pembaruan stok pada tabel obat_batch
         $stmt_update_batch = $pdo->prepare("UPDATE obat_batch SET stok_batch = stok_batch - ? WHERE id = ?");
-        
+
         // Kueri pencatatan detail potongan multi-batch (Jembatan HPP)
         $stmt_insert_detail = $pdo->prepare("INSERT INTO resep_detail_batch (resep_id, obat_batch_id, jumlah, harga_beli) VALUES (?, ?, ?, ?)");
-        
+
         // Kueri pencatatan riwayat (Kartu Stok)
-        $stmt_insert_log = $pdo->prepare("INSERT INTO log_stok (obat_id, obat_batch_id, user_id, jenis_transaksi, jumlah, keterangan) VALUES (?, ?, ?, 'keluar', ?, 'Penjualan via resep')");
+        $stmt_insert_log = $pdo->prepare("INSERT INTO log_stok (obat_id, obat_batch_id, user_id, jenis_transaksi, jumlah, keterangan, tanggal) VALUES (?, ?, ?, 'keluar', ?, 'Penjualan via resep', ?)");
 
         // Kueri pembaruan stok akumulasi di tabel master obat
         $stmt_update_stok = $pdo->prepare("UPDATE obat SET stok = stok - ? WHERE id = ?");
-        
+
         // Kueri penguncian harga jual di tabel resep
         $stmt_update_harga = $pdo->prepare("UPDATE resep SET harga_jual = ? WHERE id = ?");
 
@@ -93,7 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt_insert_detail->execute([$resep_id, $batch_id, $potong, $harga_beli_batch]);
 
                 // Catat log pergerakan stok (Stok Keluar)
-                $stmt_insert_log->execute([$obat_id, $batch_id, $user_id, $potong]);
+                $waktu_sekarang = date('Y-m-d H:i:s');
+                $stmt_insert_log->execute([$obat_id, $batch_id, $user_id, $potong, $waktu_sekarang]);
 
                 // Kurangi target sisa yang masih harus dicari dari batch berikutnya
                 $jumlah_sisa -= $potong;

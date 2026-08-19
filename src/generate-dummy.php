@@ -34,7 +34,7 @@ try {
 
     $stmt_obat = $pdo->prepare("INSERT INTO obat (kode_obat, nama_obat, satuan, stok, harga_satuan) VALUES (?, ?, ?, 0, ?)");
     $stmt_batch = $pdo->prepare("INSERT INTO obat_batch (obat_id, no_batch, tanggal_kedaluwarsa, stok_batch, harga_beli) VALUES (?, ?, ?, ?, ?)");
-    $stmt_log_masuk = $pdo->prepare("INSERT INTO log_stok (obat_id, obat_batch_id, user_id, jenis_transaksi, jumlah, keterangan) VALUES (?, ?, ?, 'masuk', ?, 'Stok Awal Dummy')");
+    $stmt_log_masuk = $pdo->prepare("INSERT INTO log_stok (obat_id, obat_batch_id, user_id, jenis_transaksi, jumlah, keterangan, tanggal) VALUES (?, ?, ?, 'masuk', ?, 'Stok Awal Dummy', ?)");
     $stmt_update_stok_utama = $pdo->prepare("UPDATE obat SET stok = stok + ? WHERE id = ?");
     
     $obat_ids = [];
@@ -55,7 +55,8 @@ try {
         $stmt_batch->execute([$new_obat_id, $no_batch, $ed, $qty_awal, $harga_beli]);
         $new_batch_id = $pdo->lastInsertId();
 
-        $stmt_log_masuk->execute([$new_obat_id, $new_batch_id, $user_id, $qty_awal]);
+        $waktu_sekarang = date('Y-m-d H:i:s');
+        $stmt_log_masuk->execute([$new_obat_id, $new_batch_id, $user_id, $qty_awal, $waktu_sekarang]);
         $stmt_update_stok_utama->execute([$qty_awal, $new_obat_id]);
     }
     echo "- Berhasil membuat " . count($obat_list) . " data master obat beserta batch awalnya.\n";
@@ -93,7 +94,7 @@ try {
     $stmt_get_batches = $pdo->prepare("SELECT id, stok_batch, harga_beli FROM obat_batch WHERE obat_id = ? AND stok_batch > 0 ORDER BY tanggal_kedaluwarsa ASC");
     $stmt_update_batch = $pdo->prepare("UPDATE obat_batch SET stok_batch = stok_batch - ? WHERE id = ?");
     $stmt_insert_detail = $pdo->prepare("INSERT INTO resep_detail_batch (resep_id, obat_batch_id, jumlah, harga_beli) VALUES (?, ?, ?, ?)");
-    $stmt_insert_log_keluar = $pdo->prepare("INSERT INTO log_stok (obat_id, obat_batch_id, user_id, jenis_transaksi, jumlah, keterangan) VALUES (?, ?, ?, 'keluar', ?, 'Penjualan via resep (Dummy)')");
+    $stmt_insert_log_keluar = $pdo->prepare("INSERT INTO log_stok (obat_id, obat_batch_id, user_id, jenis_transaksi, jumlah, keterangan, tanggal) VALUES (?, ?, ?, 'keluar', ?, 'Penjualan via resep (Dummy)', ?)");
     $stmt_update_stok = $pdo->prepare("UPDATE obat SET stok = stok - ? WHERE id = ?");
 
     // Pembaruan rentang waktu: Antara 14 hari yang lalu dan hari ini
@@ -148,7 +149,9 @@ try {
                         
                         $stmt_update_batch->execute([$potong, $batch['id']]);
                         $stmt_insert_detail->execute([$resep_id, $batch['id'], $potong, $batch['harga_beli']]);
-                        $stmt_insert_log_keluar->execute([$obat['id'], $batch['id'], $user_id, $potong]);
+            
+                        $waktu_sekarang = date('Y-m-d H:i:s');
+                        $stmt_insert_log_keluar->execute([$obat['id'], $batch['id'], $user_id, $potong, $waktu_sekarang]);
                         
                         // Kalkulasi dan penambahan ke total_hpp_kunjungan
                         $total_hpp_kunjungan += ($potong * $batch['harga_beli']);

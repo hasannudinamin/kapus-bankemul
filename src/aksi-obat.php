@@ -105,8 +105,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $id_batch = $pdo->lastInsertId();
 
                 // 2. Simpan ke tabel log_stok sebagai riwayat pergerakan (Kartu Stok)
-                $stmt_log = $pdo->prepare("INSERT INTO log_stok (obat_id, obat_batch_id, user_id, jenis_transaksi, jumlah, keterangan) VALUES (?, ?, ?, 'masuk', ?, 'Penerimaan stok batch baru')");
-                $stmt_log->execute([$id, $id_batch, $user_id, $jumlah_masuk]);
+                $waktu_sekarang = date('Y-m-d H:i:s');
+
+                $stmt_log = $pdo->prepare("INSERT INTO log_stok (obat_id, obat_batch_id, user_id, jenis_transaksi, jumlah, keterangan, tanggal) VALUES (?, ?, ?, 'masuk', ?, 'Penerimaan stok batch baru', ?)");
+                $stmt_log->execute([$id, $id_batch, $user_id, $jumlah_masuk, $waktu_sekarang]);
 
                 // 3. Update total akumulasi stok pada tabel master obat
                 $stmt_update = $pdo->prepare("UPDATE obat SET stok = stok + ? WHERE id = ?");
@@ -171,8 +173,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt_obat->execute([$jumlah, $id]);
 
                 // 3. Catat aktivitas ini ke log_stok dengan jenis 'penyesuaian'
-                $stmt_log = $pdo->prepare("INSERT INTO log_stok (obat_id, obat_batch_id, user_id, jenis_transaksi, jumlah, keterangan) VALUES (?, ?, ?, 'penyesuaian', ?, ?)");
-                $stmt_log->execute([$id, $obat_batch_id, $user_id, $jumlah_log, $keterangan]);
+                $waktu_sekarang = date('Y-m-d H:i:s');
+                $stmt_log = $pdo->prepare("INSERT INTO log_stok (obat_id, obat_batch_id, user_id, jenis_transaksi, jumlah, keterangan, tanggal) VALUES (?, ?, ?, 'penyesuaian', ?, ?, ?)");
+                $stmt_log->execute([$id, $obat_batch_id, $user_id, $jumlah_log, $keterangan, $waktu_sekarang]);
 
                 $pdo->commit();
                 
