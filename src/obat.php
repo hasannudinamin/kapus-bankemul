@@ -81,11 +81,11 @@ include 'includes/header.php';
     <div class="column is-4">
         <div class="box has-background-white h-100 is-flex is-flex-direction-column is-justify-content-center">
             <div class="buttons is-centered mb-0 w-100">
-                <button hx-get="form-stok-modal.php?id=<?= e($obat['id']) ?>" hx-target="#modal-container" class="button is-success is-fullwidth mb-2">
+                <button hx-get="form-stok-modal.php?id=<?= e($obat['id']) ?>&ref=obat" hx-target="#modal-container" class="button is-success is-fullwidth mb-2">
                     <span class="icon"><i class="mdi mdi-package-down"></i></span>
                     <span>Restock (Masuk)</span>
                 </button>
-                <button hx-get="penyesuaian-stok.php?id=<?= e($obat['id']) ?>" hx-target="#modal-container" class="button is-warning is-light is-fullwidth">
+                <button hx-get="penyesuaian-stok.php?id=<?= e($obat['id']) ?>&ref=obat" hx-target="#modal-container" class="button is-warning is-light is-fullwidth">
                     <span class="icon"><i class="mdi mdi-scale-balance"></i></span>
                     <span>Stock Opname</span>
                 </button>

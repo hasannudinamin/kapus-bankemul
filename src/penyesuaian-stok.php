@@ -4,6 +4,7 @@ require 'includes/auth-check.php';
 require 'includes/db.php';
 
 $id = $_GET['id'] ?? null;
+$ref = $_GET['ref'] ?? null;
 
 if (!$id) {
     echo '<div class="notification is-danger">Kesalahan: Parameter ID Obat tidak valid.</div>';
@@ -53,6 +54,10 @@ $batches = $stmt_batch->fetchAll();
                 <form id="form-opname" action="aksi-obat.php" method="POST">
                     <input type="hidden" name="action" value="opname">
                     <input type="hidden" name="id" value="<?= e($obat['id']) ?>">
+                    
+                    <?php if ($ref) : ?>
+                        <input type="hidden" name="ref" value="<?= e($ref) ?>">
+                    <?php endif; ?>
                     
                     <div class="box has-background-white-bis shadow-none border mb-4" style="border: 1px solid #f0f0f0;">
                         <p class="mb-1 is-size-6"><strong>Nama Obat:</strong> <?= e($obat['nama_obat']) ?></p>

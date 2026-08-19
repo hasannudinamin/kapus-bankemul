@@ -150,7 +150,7 @@ if (empty($obat_list)) {
                 <footer class="card-footer" style="background-color: #fafafa; padding: 0.5rem; display: flex; justify-content: space-around;">
                     <!-- Tombol Restock -->
                     <button 
-                        hx-get="form-stok-modal.php?id=<?= e($obat['id']) ?>" 
+                        hx-get="form-stok-modal.php?id=<?= e($obat['id']) ?>&ref=manajemen-obat" 
                         hx-target="#modal-container"
                         class="button is-success is-small is-light"
                         title="Restock (Tambah Stok)">
@@ -158,14 +158,14 @@ if (empty($obat_list)) {
                     </button>
                     <!-- Tombol Stock Opname -->
                     <button 
-                        hx-get="penyesuaian-stok.php?id=<?= e($obat['id']) ?>" 
+                        hx-get="penyesuaian-stok.php?id=<?= e($obat['id']) ?>&ref=manajemen-obat" 
                         hx-target="#modal-container"
                         class="button is-warning is-small is-light"
                         title="Penyesuaian Stok (Opname)">
                         <span class="icon"><i class="mdi mdi-scale-balance"></i></span>
                     </button>
                     <!-- Tombol Edit Profil Obat -->
-                    <a href="form-obat.php?id=<?= e($obat['id']) ?>" class="button is-info is-small is-light" title="Edit Profil Obat">
+                    <a href="form-obat.php?id=<?= e($obat['id']) ?>&ref=manajemen-obat" class="button is-info is-small is-light" title="Edit Profil Obat">
                         <span class="icon"><i class="mdi mdi-square-edit-outline"></i></span>
                     </a>
                     <!-- Tombol Detail / Kartu Stok (Opsi A) -->

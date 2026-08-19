@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nama_obat = trim($_POST['nama_obat']);
         $satuan = trim($_POST['satuan'] ?? '');
         $harga_satuan = (float)($_POST['harga_satuan'] ?? 0);
+        $ref = $_POST['ref'] ?? null;
 
         try {
             $pdo->beginTransaction();
@@ -65,7 +66,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$kode_obat, $nama_obat, $satuan, $harga_satuan, $id]);
 
             $pdo->commit();
-            redirect("manajemen-obat.php");
+            $link = "manajemen-obat.php";
+            if ($ref === 'obat') {
+                $link = "obat.php?id=" . $id;
+            }
+            redirect($link);
 
         } catch (PDOException $e) {
             $pdo->rollBack();
@@ -77,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
     } elseif ($action === 'restock') {
         $id = $_POST['id'] ?? null;
+        $ref = $_POST['ref'] ?? null;
         $jumlah_masuk = (int)($_POST['jumlah_masuk'] ?? 0);
         
         // Menangkap parameter baru dari form modal restock
@@ -107,7 +113,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt_update->execute([$jumlah_masuk, $id]);
 
                 $pdo->commit();
-                redirect("manajemen-obat.php");
+
+                $link = "manajemen-obat.php";
+                if ($ref === 'obat') {
+                    $link = "obat.php?id=" . $id;
+                }
+                redirect($link);
             } catch (Exception $e) {
                 $pdo->rollBack();
                 die("Gagal memperbarui stok: " . $e->getMessage());
@@ -123,6 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $jumlah = (int)($_POST['jumlah'] ?? 0);
         $keterangan = trim($_POST['keterangan'] ?? '');
         $user_id = $_SESSION['user_id'] ?? null;
+        $ref = $_POST['ref'] ?? null;
 
         if ($id && $obat_batch_id && $jumlah > 0 && in_array($jenis_penyesuaian, ['penambahan', 'pengurangan'])) {
             try {
@@ -164,8 +176,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $pdo->commit();
                 
-                // Mengarahkan kembali ke halaman detail obat
-                redirect("obat.php?id=" . $id);
+                $link = "manajemen-obat.php";
+                if ($ref === 'obat') {
+                    $link = "obat.php?id=" . $id;
+                }
+                redirect($link);
             } catch (Exception $e) {
                 $pdo->rollBack();
                 die("Gagal melakukan penyesuaian stok: " . $e->getMessage());

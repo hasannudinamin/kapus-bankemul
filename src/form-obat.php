@@ -4,6 +4,7 @@ require 'includes/auth-check.php';
 require 'includes/db.php';
 
 $id = $_GET['id'] ?? null;
+$ref = $_GET['ref'] ?? null;
 $obat = null;
 
 if ($id) {
@@ -40,7 +41,7 @@ include 'includes/header.php';
             </a>
         </div>
         <div class="is-hidden-touch">
-            <a class="button is-light" href="manajemen-obat.php">
+  <a class="button is-light" href="<?= $ref === 'obat' ? 'obat.php?id=' . e($id) : 'manajemen-obat.php' ?>">
                 <span class="icon">
                     <i class="mdi mdi-arrow-left"></i>
                 </span>
@@ -55,6 +56,10 @@ include 'includes/header.php';
         <input type="hidden" name="action" value="<?= $id ? 'update' : 'create' ?>">
         <?php if ($id) : ?>
             <input type="hidden" name="id" value="<?= e($id) ?>">
+        <?php endif; ?>
+    
+        <?php if ($ref) : ?>
+            <input type="hidden" name="ref" value="<?= e($ref) ?>">
         <?php endif; ?>
 
         <div class="columns is-multiline">
