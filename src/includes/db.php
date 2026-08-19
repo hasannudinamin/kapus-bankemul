@@ -100,6 +100,7 @@ try {
         rekam_medik_id INTEGER NOT NULL UNIQUE,
         biaya_layanan REAL DEFAULT 0,
         biaya_obat REAL DEFAULT 0,
+        total_hpp_obat REAL DEFAULT 0,
         total_tagihan REAL DEFAULT 0,
         uang_dibayar REAL DEFAULT 0,
         kembalian REAL DEFAULT 0,

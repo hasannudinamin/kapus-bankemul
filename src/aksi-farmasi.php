@@ -20,6 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo->beginTransaction();
         
+        // --- PENAMBAHAN: Inisialisasi variabel penampung total modal (HPP) ---
+        $total_hpp_kunjungan = 0;
+
         // 1. Mengambil seluruh item resep dan harga satuan saat ini dari tabel obat
         // Tambahkan nama_obat untuk keperluan pesan error jika stok tidak cukup
         $stmt_resep = $pdo->prepare("
@@ -83,10 +86,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Tentukan jumlah yang bisa diambil dari batch ini
                 $potong = min($jumlah_sisa, $stok_batch);
 
-                // Potong stok di tabel obat_batch
-                $stmt_update_batch->execute([$potong, $batch_id]);
+                // --- PENAMBAHAN: Kalkulasi HPP dari jumlah yang dipotong dikali harga beli batch ---
+                $total_hpp_kunjungan += ($potong * $harga_beli_batch);
 
-                // Catat transaksi pemotongan batch untuk laporan Laba (HPP)
+                $stmt_update_batch->execute([$potong, $batch_id]);
                 $stmt_insert_detail->execute([$resep_id, $batch_id, $potong, $harga_beli_batch]);
 
                 // Catat log pergerakan stok (Stok Keluar)
@@ -111,6 +114,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 5. Memperbarui status layanan rekam medis dari 'farmasi' menjadi 'pembayaran'
         $stmt_rm = $pdo->prepare("UPDATE rekam_medik SET status_layanan = 'pembayaran' WHERE id = ?");
         $stmt_rm->execute([$id_rm]);
+
+        // --- PENAMBAHAN: Menyimpan Total HPP secara permanen ke tabel keuangan ---
+        $stmt_hpp = $pdo->prepare("UPDATE keuangan SET total_hpp_obat = ? WHERE rekam_medik_id = ?");
+        $stmt_hpp->execute([$total_hpp_kunjungan, $id_rm]);
 
         $pdo->commit();
 
