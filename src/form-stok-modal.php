@@ -127,26 +127,3 @@ if (!$obat) {
         </footer>
     </div>
 </div>
-
-<script>
-    // Logika Kalkulasi Otomatis Harga Satuan
-    const inputJumlah = document.getElementById('input-jumlah');
-    const inputTotal = document.getElementById('input-total');
-    const inputSatuan = document.getElementById('input-satuan');
-
-    function hitungHargaSatuan() {
-        const jumlah = parseFloat(inputJumlah.value) || 0;
-        const total = parseFloat(inputTotal.value) || 0;
-
-        // Melakukan kalkulasi hanya jika pengguna memasukkan angka valid
-        if (jumlah > 0 && total > 0) {
-            const hargaPerSatuan = total / jumlah;
-            // Menghilangkan desimal berlebih jika angkanya bulat
-            inputSatuan.value = Number.isInteger(hargaPerSatuan) ? hargaPerSatuan : hargaPerSatuan.toFixed(2);
-        }
-    }
-
-    // Memicu kalkulasi saat input "Jumlah Masuk" atau "Harga Beli Total" berubah
-    inputJumlah.addEventListener('input', hitungHargaSatuan);
-    inputTotal.addEventListener('input', hitungHargaSatuan);
-</script>
