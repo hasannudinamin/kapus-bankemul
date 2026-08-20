@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // 1. Simpan inventaris fisik ke tabel obat_batch
                 $stmt_batch = $pdo->prepare("INSERT INTO obat_batch (obat_id, no_batch, tanggal_kedaluwarsa, stok_batch, harga_beli) VALUES (?, ?, ?, ?, ?)");
                 $stmt_batch->execute([$id, $no_batch, $tanggal_kedaluwarsa, $jumlah_masuk, $harga_beli]);
-                
+
                 // Menangkap ID batch yang baru saja dibuat
                 $id_batch = $pdo->lastInsertId();
 
@@ -155,20 +155,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     $stmt_batch = $pdo->prepare("UPDATE obat_batch SET stok_batch = stok_batch - ? WHERE id = ?");
                     $stmt_obat = $pdo->prepare("UPDATE obat SET stok = stok - ? WHERE id = ?");
-                    
+
                     // Menyimpan angka sebagai negatif di log agar terlihat perbedaannya
-                    $jumlah_log = -$jumlah; 
+                    $jumlah_log = -$jumlah;
                 } else {
                     $stmt_batch = $pdo->prepare("UPDATE obat_batch SET stok_batch = stok_batch + ? WHERE id = ?");
                     $stmt_obat = $pdo->prepare("UPDATE obat SET stok = stok + ? WHERE id = ?");
-                    
+
                     // Menyimpan angka sebagai positif di log
                     $jumlah_log = $jumlah;
                 }
 
                 // 1. Eksekusi pembaruan stok spesifik pada batch
                 $stmt_batch->execute([$jumlah, $obat_batch_id]);
-                
+
                 // 2. Eksekusi pembaruan stok akumulasi pada tabel master
                 $stmt_obat->execute([$jumlah, $id]);
 
@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt_log->execute([$id, $obat_batch_id, $user_id, $jumlah_log, $keterangan, $waktu_sekarang]);
 
                 $pdo->commit();
-                
+
                 $link = "manajemen-obat.php";
                 if ($ref === 'obat') {
                     $link = "obat.php?id=" . $id;

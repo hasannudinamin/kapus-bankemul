@@ -165,7 +165,7 @@ foreach ($kunjungan_list as $index => $row) :
                             <span>Proses Pembayaran</span>
                         </a>
                     <?php else: ?>
-                        <a href="konfirmasi-biaya.php?id_rm=<?= e($row['id_rm']) ?>" class="button is-success is-light is-small is-fullwidth">
+                        <a href="detail-rm.php?id=<?= e($row['id_rm']) ?>" class="button is-success is-light is-small is-fullwidth">
                             <span class="icon"><i class="mdi mdi-check-circle"></i></span>
                             <span>Lihat Rincian Selesai</span>
                         </a>

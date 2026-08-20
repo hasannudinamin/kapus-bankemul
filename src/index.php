@@ -112,15 +112,15 @@ function getStatusTag($status) {
 function getActionButton($status, $id_rm) {
     switch (strtolower($status)) {
         case 'menunggu': 
-            return '<a href="pemeriksaan.php?id=' . $id_rm . '" class="button is-small is-info" title="Mulai Pemeriksaan"><span class="icon"><i class="mdi mdi-stethoscope"></i></span> <span>Periksa</span></a>';
+            return '<a href="pemeriksaan.php?id=' . $id_rm . '" class="button is-small is-info" title="Mulai Pemeriksaan"><span class="icon"><i class="mdi mdi-stethoscope"></i></span> <span>Layani</span></a>';
         case 'pemeriksaan': 
-            return '<a href="resep.php?id=' . $id_rm . '" class="button is-small is-primary" title="Input Resep & Tindakan"><span class="icon"><i class="mdi mdi-pill"></i></span> <span>Resep</span></a>';
+            return '<a href="pemeriksaan.php?id=' . $id_rm . '" class="button is-small is-primary" title="Input Resep & Tindakan"><span class="icon"><i class="mdi mdi-pill"></i></span> <span>Periksa</span></a>';
         case 'farmasi': 
-            return '<a href="farmasi-proses.php?id=' . $id_rm . '" class="button is-small is-primary is-light" title="Proses Obat"><span class="icon"><i class="mdi mdi-medical-bag"></i></span> <span>Siapkan Obat</span></a>';
+            return '<a href="farmasi-proses.php?id=' . $id_rm . '" class="button is-small is-primary is-light" title="Proses Obat"><span class="icon"><i class="mdi mdi-medical-bag"></i></span> <span>Farmasi</span></a>';
         case 'pembayaran': 
             return '<a href="konfirmasi-biaya.php?id_rm=' . $id_rm . '" class="button is-small is-link" title="Ke Kasir"><span class="icon"><i class="mdi mdi-cash-register"></i></span> <span>Kasir</span></a>';
         case 'selesai': 
-            return '<a href="detail-rm.php?id=' . $id_rm . '" class="button is-small is-light" title="Lihat Rekam Medik"><span class="icon"><i class="mdi mdi-eye"></i></span></a>';
+            return '<a href="detail-rm.php?id=' . $id_rm . '" class="button is-small is-light" title="Lihat Rekam Medis"><span class="icon"><i class="mdi mdi-eye"></i></span> <span>Rekam Medis</span></a>';
         default: return '';
     }
 }
