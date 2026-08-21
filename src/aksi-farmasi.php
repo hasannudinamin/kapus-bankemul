@@ -9,7 +9,8 @@ $config = require_once __DIR__ . '/includes/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_rm = $_POST['id_rm'] ?? null;
-    
+    $pasien_id = $_POST['pasien_id'] ?? null;
+
     // Mengambil ID User dari sesi untuk dicatat di log_stok
     $user_id = $_SESSION['user_id'] ?? null;
 
@@ -126,8 +127,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mode = $config['app']['mode'] ?? 'mandiri';
 
         if ($mode === 'klinik') {
+            $_SESSION['notification'] = [
+               'status' => 'farmasi_selesai',
+               'id_pasien' => $pasien_id,
+            ];
             // Mode Klinik: Kembali ke dashboard pelayanan dengan parameter status sukses
-            redirect("pelayanan.php?status=success&msg=farmasi_selesai");
+            redirect("pelayanan.php");
         } else {
             // Mode Mandiri: Langsung diarahkan ke halaman konfirmasi pembayaran/kasir
             redirect("konfirmasi-biaya.php?id_rm=" . $id_rm);

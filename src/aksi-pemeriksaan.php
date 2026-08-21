@@ -8,6 +8,7 @@ $config = require_once __DIR__ . '/includes/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_rm = $_POST['id_rm'] ?? null;
+    $pasien_id = $_POST['pasien_id'] ?? null;
     $keluhan = trim($_POST['keluhan'] ?? '');
     $diagnosa = trim($_POST['diagnosa'] ?? '');
     $tindakan = trim($_POST['tindakan'] ?? '');
@@ -43,8 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mode = $config['app']['mode'] ?? 'mandiri';
             
             if ($mode === 'klinik') {
+                $_SESSION['notification'] = [
+                   'status' => 'pemeriksaan_selesai',
+                   'id_pasien' => $pasien_id,
+                ];
                 // Mode Klinik: Arahkan kembali ke dashboard pelayanan
-                redirect("pelayanan.php?status=success&msg=pemeriksaan_selesai");
+                redirect("pelayanan.php");
             } else {
                 // Mode Mandiri: Arahkan langsung ke form farmasi
                 redirect("farmasi.php?id_rm=" . $id_rm);

@@ -9,6 +9,7 @@ $config = require_once __DIR__ . '/includes/config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_rm = $_POST['id_rm'] ?? null;
+    $pasien_id = $_POST['pasien_id'] ?? null;
     $biaya_layanan = (float)($_POST['biaya_layanan'] ?? 0); // Tambahkan baris ini
     $biaya_obat = (float)($_POST['biaya_obat'] ?? 0);
     $total_tagihan = (float)($_POST['total_tagihan'] ?? 0);
@@ -68,8 +69,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mode = $config['app']['mode'] ?? 'mandiri';
 
         if ($mode === 'klinik') {
+            $_SESSION['notification'] = [
+               'status' => 'farmasi_selesai',
+               'id_pasien' => $pasien_id,
+            ];
             // Mode Klinik: Kembali ke dashboard pelayanan dengan parameter notifikasi
-            redirect("pelayanan.php?status=success&msg=pembayaran_selesai");
+            redirect("pelayanan.php");
         } else {
             // Mode Mandiri: Tetap di halaman konfirmasi biaya untuk menampilkan nota lunas & cetak struk
             redirect("konfirmasi-biaya.php?id_rm=" . $id_rm);

@@ -149,6 +149,7 @@ include 'includes/header.php';
             <?php if (!$is_selesai): ?>
             <form action="aksi-pembayaran.php" method="POST" id="form-pembayaran">
                 <input type="hidden" name="id_rm" value="<?= e($id_rm) ?>">
+                <input type="hidden" name="pasien_id" value="<?= e($kunjungan['pasien_id']) ?>">
                 <input type="hidden" name="biaya_obat" id="input-total-obat" value="<?= $total_biaya_obat ?>">
                 
                 <div class="field mb-3">

@@ -104,6 +104,7 @@ include 'includes/header.php';
             <!-- Form terpisah murni untuk update data keluhan, diagnosa, tindakan -->
             <form action="aksi-pemeriksaan.php" method="POST">
                 <input type="hidden" name="id_rm" value="<?= e($id_rm) ?>">
+                <input type="hidden" name="pasien_id" value="<?= $kunjungan['pasien_id'] ?>">
 
                 <div class="field">
                     <label class="label has-text-grey">Keluhan Pasien (Anamnesa)</label>

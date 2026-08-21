@@ -68,7 +68,7 @@ include 'includes/header.php';
                 <span class="icon"><i class="mdi mdi-account-details-outline"></i></span>
                 Ringkasan Kunjungan
             </h4>
-            
+
             <table class="table is-fullwidth is-narrow is-borderless mb-4">
                 <tbody>
                     <tr>
@@ -194,6 +194,7 @@ include 'includes/header.php';
             <!-- Form Eksekusi Farmasi -->
             <form action="aksi-farmasi.php" method="POST" class="mt-4">
                 <input type="hidden" name="id_rm" value="<?= e($id_rm) ?>">
+                <input type="hidden" name="pasien_id" value="<?= e($kunjungan['pasien_id']) ?>">
                 
                 <div class="is-flex is-justify-content-flex-end">
                     <button type="submit" class="button is-link is-medium" <?= !$can_process ? 'disabled' : '' ?> onclick="return confirm('Apakah Anda yakin semua obat telah disiapkan dengan benar? Tindakan ini akan memotong stok gudang secara permanen.');">

@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pasien_id = $_POST['pasien_id'] ?? null;
         
         // Memastikan ID User diambil dari sesi pengguna yang sedang masuk
-        $user_id = $_SESSION['user_id'] ?? null; 
+        $user_id = $_SESSION['user_id'] ?? null;
 
         if (!$pasien_id || !$user_id) {
             die("Gagal mendaftar: Data pasien atau identitas petugas tidak valid.");
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Memasukkan variabel waktu_sekarang secara eksplisit ke kolom tanggal_kunjungan
             $stmt_rm = $pdo->prepare("INSERT INTO rekam_medik (pasien_id, user_id, status_layanan, tanggal_kunjungan) VALUES (?, ?, 'menunggu', ?)");
             $stmt_rm->execute([$pasien_id, $user_id, $waktu_sekarang]);
-            
+
             // Menangkap ID dari kunjungan yang baru saja dibuat
             $id_rm = $pdo->lastInsertId();
 
@@ -41,7 +41,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // 3. Logika pengalihan (redirect) berdasarkan mode aplikasi
             $mode = $config['app']['mode'] ?? 'mandiri';
-            $target_url = ($mode === 'klinik') ? "pelayanan.php?status=success&msg=terdaftar" : "pemeriksaan.php?id_rm=" . $id_rm;
+            if ($mode === 'klinik') {
+                $_SESSION['notification'] = [
+                   'status' => 'terdaftar',
+                   'id_pasien' => $pasien_id,
+                ];
+            }
+
+            $target_url = ($mode === 'klinik') ? "pelayanan.php" : "pemeriksaan.php?id_rm=" . $id_rm;
 
             // Cek apakah request dari HTMX
             if (isset($_SERVER['HTTP_HX_REQUEST'])) {
@@ -52,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Fallback untuk request biasa
                 redirect($target_url);
             }
-
         } catch (Exception $e) {
             $pdo->rollBack();
             die("Terjadi kesalahan sistem saat mendaftarkan kunjungan: " . $e->getMessage());

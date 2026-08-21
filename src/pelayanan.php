@@ -203,28 +203,37 @@ $page_title = 'Dashboard Pelayanan & Antrean';
 include 'includes/header.php';
 
 // Memproses pesan notifikasi dari parameter GET
-$msg = isset($_GET['msg']) ? trim($_GET['msg']) : '';
+$msg = $_SESSION['notification']['status'] ?? '';
 $notification_html = '';
 
-if ($msg !== '') {
+$info_pasien = false;
+if (isset($_SESSION['notification']['id_pasien'])) {
+    $id_pt = $_SESSION['notification']['id_pasien'];
+
+    $stmt_pt = $pdo->prepare("SELECT nama_lengkap AS nama, no_rm FROM pasien WHERE id = ?");
+    $stmt_pt->execute([$id_pt]);
+    $info_pasien = $stmt_pt->fetch();
+}
+
+if ($msg !== '' && $info_pasien) {
     $notif_title = '';
     $notif_text = '';
-    
+
     switch ($msg) {
         case 'terdaftar':
-            $notif_title = 'Pasien Terdaftar!';
+            $notif_title = $info_pasien['nama'] . ' Telah Terdaftar!';
             $notif_text = 'Kunjungan pasien berhasil didaftarkan dan masuk ke antrean.';
             break;
         case 'pemeriksaan_selesai':
-            $notif_title = 'Pemeriksaan Selesai!';
+            $notif_title = 'Pemeriksaan ' . $info_pasien['nama'] . ' Telah Selesai!';
             $notif_text = 'Data pemeriksaan medis telah disimpan. Pasien diarahkan ke tahap selanjutnya.';
             break;
         case 'farmasi_selesai':
-            $notif_title = 'Farmasi Selesai!';
-            $notif_text = 'Obat telah divalidasi dan diserahkan kepada pasien.';
+            $notif_title = 'Validasi Obat untuk ' . $info_pasien['nama'] . ' Telah Selesai!';
+            $notif_text = 'Obat telah divalidasi dan siap diambil pasien.';
             break;
         case 'pembayaran_selesai':
-            $notif_title = 'Transaksi Lunas & Selesai!';
+            $notif_title = 'Transaksi ' . $info_pasien['nama'] . 'Telah Lunas & Selesai untuk!';
             $notif_text = 'Pembayaran untuk kunjungan ini telah dikonfirmasi. Anda dapat mencetak struk pembayaran di bawah ini.';
             break;
     }
@@ -233,9 +242,9 @@ if ($msg !== '') {
         $notification_html = '
         <div class="notification is-success is-light mb-4">
             <button class="delete" onclick="this.parentElement.remove()"></button>
-            <span class="icon mr-1"><i class="mdi mdi-check-circle-outline"></i></span>
-            <strong>' . htmlspecialchars($notif_title) . '</strong> ' . htmlspecialchars($notif_text) . '
+            <strong>' . htmlspecialchars($notif_title) . '</strong><br> <span class="icon mr-1"><i class="mdi mdi-check-circle-outline"></i></span>' . htmlspecialchars($notif_text) . '
         </div>';
+        unset($_SESSION['notification']);
     }
 }
 ?>
