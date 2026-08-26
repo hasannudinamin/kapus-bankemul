@@ -6,7 +6,7 @@ require 'includes/db.php';
 // Jika HTMX meminta hasil pencarian
 if (isset($_GET['q'])) {
     $search = '%' . $_GET['q'] . '%';
-    $stmt = $pdo->prepare("SELECT id, no_rm, nama_lengkap FROM pasien WHERE nama_lengkap LIKE ? OR no_rm LIKE ? LIMIT 5");
+    $stmt = $pdo->prepare("SELECT id, no_rm, tanggal_lahir, nama_lengkap FROM pasien WHERE nama_lengkap LIKE ? OR no_rm LIKE ? LIMIT 5");
     $stmt->execute([$search, $search]);
     $pasien_list = $stmt->fetchAll();
 
@@ -17,7 +17,18 @@ if (isset($_GET['q'])) {
             echo '<div class="box is-flex is-justify-content-space-between is-align-items-center py-2 mb-2">
                     <div>
                         <strong>' . e($p['nama_lengkap']) . '</strong><br>
-                        <span class="is-size-7 has-text-grey">' . e($p['no_rm']) . '</span>
+        <span class="mr-3 has-text-grey is-size-7">
+        <span class="icon">
+          <i class="mdi mdi-calendar"></i>
+        </span>
+        <span>' . e($p['tanggal_lahir']) . '</span>
+        </span>
+        <span class="has-text-grey is-size-7">
+        <span class="icon">
+          <i class="mdi mdi-file"></i>
+        </span>
+        <span>' . e($p['no_rm']) . '</span>
+        </span>
                     </div>
                     <form action="aksi-kunjungan.php" method="POST">
                         <input type="hidden" name="action" value="create">
