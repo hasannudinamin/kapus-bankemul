@@ -83,17 +83,11 @@ $page_title = isset($page_title) ? $page_title . ' - ' . $config['app']['name'] 
                             Lainnya
                           </a>
                           <div class="navbar-dropdown">
-                              <a href="log-resep.php" class="navbar-item">
-                                      <span class="icon has-text-grey">
-                                          <i class="mdi mdi-history"></i>
-                                      </span>
-                                      <span>Log Riwayat Resep</span>
-                              </a>
-                              <a href="grafik-data.php" class="navbar-item">
+                              <a href="keuangan.php" class="navbar-item">
                                       <span class="icon has-text-primary">
-                                          <i class="mdi mdi-chart-bar"></i>
+                                          <i class="mdi mdi-finance"></i>
                                       </span>
-                                      <span>Grafik Analitik Data</span>
+                                      <span>Manajemen Keuangan</span>
                               </a>
                               <a href="olah-data.php" class="navbar-item">
                                       <span class="icon has-text-link">
