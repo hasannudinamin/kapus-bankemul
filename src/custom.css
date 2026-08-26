@@ -1,0 +1,60 @@
+
+/* custom.css */
+
+/*
+/* 1. Target ONLY the active pagination button /
+.pagination-list .pagination-link.is-current {
+  background-color: var(--bulma-primary);
+  border-color: var(--bulma-primary);
+  color: var(--bulma-primary-invert); /* Ensures text is readable (usually white) /
+}
+
+/* Optional: Make the hover state of inactive pagination links match /
+.pagination-list .pagination-link:hover {
+  border-color: var(--bulma-primary);
+  color: var(--bulma-primary);
+}*/
+
+/* 2. Target ONLY the navbar hamburger menu icon */
+.navbar-burger {
+  color: var(--bulma-primary);
+}
+
+/* Optional: Keep the color primary when hovered, but add a slight background */
+.navbar-burger:hover {
+  color: var(--bulma-primary);
+  background-color: rgba(0, 0, 0, 0.05); 
+}
+
+/* 1. Desktop View: Standard button size, forced into a perfect square */
+.is-responsive-icon {
+  padding: 0 !important;
+  width: 2.5rem;  /* Matches Bulma's default button height */
+  height: 2.5rem;
+  justify-content: center !important;
+}
+
+/* Ensure the icon sits perfectly dead-center */
+.is-responsive-icon .icon {
+  margin: 0 !important;
+}
+
+/* 2. Mobile View: Shrink down to match Bulma's 'is-small' size */
+@media screen and (max-width: 768px) {
+  .is-responsive-icon {
+    width: 1.75rem; 
+    height: 1.75rem;
+  }
+  
+  /* Slightly scale down the icon itself so it doesn't look cramped in the small box */
+  .is-responsive-icon .icon i {
+    font-size: 0.875rem;
+  }
+
+  .box-desktop {
+    box-shadow: none !important;
+    background-color: transparent !important;
+    border-radius: 0 !important;
+    padding: 0 !important; /* Anda bisa mengubahnya menjadi 0.75rem jika masih membutuhkan sedikit jarak */
+  }
+}
