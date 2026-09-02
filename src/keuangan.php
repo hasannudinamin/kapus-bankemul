@@ -113,7 +113,7 @@ include 'includes/header.php';
 <div class="columns is-desktop is-variable is-4 mb-5">
     <!-- Tren 7 Hari Terakhir -->
     <div class="column is-8">
-        <div class="box h-100">
+        <div class="box box-desktop h-100">
             <h4 class="title is-6 has-text-grey-dark border-bottom pb-2 mb-4">
                 <span class="icon"><i class="mdi mdi-chart-areaspline"></i></span> Tren Omzet & Laba (7 Hari Terakhir)
             </h4>
@@ -124,7 +124,7 @@ include 'includes/header.php';
     </div>
     <!-- Breakdown Laba & Modal Bulan Ini -->
     <div class="column is-4">
-        <div class="box h-100">
+        <div class="box box-desktop h-100">
             <h4 class="title is-6 has-text-grey-dark border-bottom pb-2 mb-4">
                 <span class="icon"><i class="mdi mdi-chart-donut"></i></span> Struktur Pendapatan Bulan Ini
             </h4>
@@ -150,7 +150,7 @@ include 'includes/header.php';
 </div>
 
 <!-- Buku Besar / Filter & Tabel Transaksi -->
-<div class="box">
+<div class="box box-desktop">
     <div class="is-flex is-flex-wrap-wrap is-justify-content-space-between is-align-items-flex-end mb-4 border-bottom pb-3">
         <h4 class="title is-5 mb-2 has-text-grey-dark">
             <span class="icon"><i class="mdi mdi-book-open-page-variant"></i></span> Buku Besar Transaksi

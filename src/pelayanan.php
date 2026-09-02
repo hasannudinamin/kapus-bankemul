@@ -253,7 +253,7 @@ if ($msg !== '' && $info_pasien) {
 
 <div class="columns is-vcentered mb-5 is-mobile">
     <div class="column">
-        <h1 class="title is-size-3 is-size-4-mobile is-flex is-align-items-center">
+        <h1 class="title is-size-3 is-size-5-mobile is-flex is-align-items-center">
             <span class="icon has-text-info mr-2">
                 <i class="mdi mdi-view-dashboard-outline"></i>
             </span>
@@ -264,12 +264,21 @@ if ($msg !== '' && $info_pasien) {
         </h1>
     </div>
     <div class="column is-narrow">
+        <div class="is-hidden-touch">
         <a class="button is-info" href="daftar-pasien.php">
             <span class="icon">
                 <i class="mdi mdi-account-search"></i>
             </span>
             <span>Cari Pasien / Daftar Kunjungan</span>
         </a>
+        </div>
+        <div class="is-hidden-desktop">
+        <a class="button is-responsive-icon is-info" href="daftar-pasien.php">
+            <span class="icon">
+                <i class="mdi mdi-account-search"></i>
+            </span>
+        </a>
+        </div>
     </div>
 </div>
 
@@ -277,19 +286,19 @@ if ($msg !== '' && $info_pasien) {
     <form id="filter-form" hx-get="pelayanan.php" hx-target="#container-grid" hx-indicator="#filter-indicator" hx-trigger="input changed delay:300ms from:input, change from:select">
         <div class="columns is-multiline is-variable is-2">
             <div class="column is-12-mobile is-4-tablet">
-                <div class="control has-icons-left">
-                    <input class="input" type="date" name="tanggal" value="<?= e($filter_tanggal) ?>" aria-label="Tanggal Kunjungan">
+                <div class="control has-icons-left is-size-7-mobile">
+                    <input class="input is-size-7-mobile" type="date" name="tanggal" value="<?= e($filter_tanggal) ?>" aria-label="Tanggal Kunjungan">
                     <span class="icon is-left"><i class="mdi mdi-calendar"></i></span>
                 </div>
             </div>
             <div class="column is-12-mobile is-4-tablet">
-                <div class="control has-icons-left">
-                    <input class="input" type="text" name="nama_pasien" value="<?= e($filter_nama) ?>" placeholder="Cari nama pasien...">
+                <div class="control has-icons-left is-size-7-mobile">
+                    <input class="input is-size-7-mobile" type="text" name="nama_pasien" value="<?= e($filter_nama) ?>" placeholder="Cari nama pasien...">
                     <span class="icon is-left"><i class="mdi mdi-magnify"></i></span>
                 </div>
             </div>
             <div class="column is-12-mobile is-4-tablet">
-                <div class="control has-icons-left">
+                <div class="control has-icons-left is-size-7-mobile">
                     <div class="select is-fullwidth">
                         <select name="status_layanan">
                             <option value="">Semua Status Layanan</option>
@@ -300,7 +309,7 @@ if ($msg !== '' && $info_pasien) {
                             <option value="selesai" <?= $filter_status === 'selesai' ? 'selected' : '' ?>>Selesai</option>
                         </select>
                     </div>
-                    <span class="icon is-left"><i class="mdi mdi-filter-outline"></i></span>
+                    <span class="icon is-left is-size-7-mobile"><i class="mdi mdi-filter-outline"></i></span>
                 </div>
             </div>
         </div>

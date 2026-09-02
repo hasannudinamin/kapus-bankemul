@@ -196,7 +196,7 @@ include 'includes/header.php';
 
 <div class="columns is-vcentered mb-4 is-mobile">
     <div class="column">
-        <h1 class="title is-size-3 is-size-4-mobile mb-1">
+        <h1 class="title is-size-3 is-size-5-mobile">
             <span class="icon has-text-primary">
                 <i class="mdi mdi-pill"></i>
             </span>
@@ -207,14 +207,25 @@ include 'includes/header.php';
         </h2>
     </div>
     <div class="column is-narrow">
+        <div class="is-hidden-touch">
         <a class="button is-primary" href="form-obat.php">
             <span class="icon-text">
                 <span class="icon">
                     <i class="mdi mdi-plus-box"></i>
                 </span>
-                <span class="is-hidden-mobile">Tambah Obat Baru</span>
+                <span>Tambah Obat Baru</span>
             </span>
         </a>
+        </div>
+        <div class="is-hidden-desktop">
+        <a class="button is-size-7-mobile is-primary" href="form-obat.php">
+            <span class="icon-text">
+                <span class="icon is-responsive-icon">
+                    <i class="mdi mdi-plus-box"></i>
+                </span>
+            </span>
+        </a>
+        </div>
     </div>
 </div>
 
@@ -247,19 +258,19 @@ include 'includes/header.php';
 </div>
 
 <!-- Form Filter & Live Sort Terpadu dengan HTMX -->
-<div class="box mb-5">
+<div class="box box-desktop mb-5">
     <form method="GET" action="manajemen-obat.php" id="form-filter-obat" class="columns is-multiline is-variable is-2 mb-0" hx-get="manajemen-obat.php" hx-target="#obat-grid" hx-trigger="submit, change from:select, keyup changed delay:500ms from:input[name='search']">
         <div class="column is-8-desktop is-12-mobile">
             <div class="field mb-0">
-                <div class="control has-icons-left">
+                <div class="control has-icons-left is-size-7-mobile">
                     <input
-                        class="input"
+                        class="input is-size-7-mobile"
                         type="search"
                         name="search"
                         placeholder="Cari berdasarkan nama obat atau scan barcode kode obat..."
                         value="<?= e($search) ?>"
                         autocomplete="off">
-                    <span class="icon is-left">
+                    <span class="icon is-left is-size-7-mobile">
                         <i class="mdi mdi-magnify"></i>
                     </span>
                 </div>
@@ -267,7 +278,7 @@ include 'includes/header.php';
         </div>
         <div class="column is-4-desktop is-12-mobile">
             <div class="field mb-0">
-                <div class="control has-icons-left">
+                <div class="control has-icons-left is-size-7-mobile">
                     <div class="select is-fullwidth">
                         <select name="sort">
                             <option value="nama_asc" <?= $sort === 'nama_asc' ? 'selected' : '' ?>>Urutkan: Nama (A - Z)</option>
