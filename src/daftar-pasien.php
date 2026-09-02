@@ -31,13 +31,13 @@ $pasien_list = $stmt->fetchAll();
 
 // Memuat header halaman hanya jika bukan merupakan pemanggilan HTMX
 if (!$is_htmx) {
-    $page_title = 'Daftar Pasien - Manajemen Klinik';
+    $page_title = 'Daftar Pasien';
     include 'includes/header.php';
 ?>
 
 <div class="columns is-vcentered mb-5 is-mobile">
     <div class="column">
-        <h1 class="title is-size-3 is-size-4-mobile">
+        <h1 class="title is-size-3 is-size-5-mobile">
             <span class="icon has-text-primary">
                 <i class="mdi mdi-account-group"></i>
             </span>
@@ -48,14 +48,25 @@ if (!$is_htmx) {
         </h2>
     </div>
     <div class="column is-narrow is-narrow-mobile">
+        <div class="is-hidden-desktop">
+        <a class="button is-responsive-icon is-primary" href="form-pasien.php">
+            <span class="icon-text">
+                <span class="icon">
+                    <i class="mdi mdi-account-plus"></i>
+                </span>
+            </span>
+        </a>
+        </div>
+        <div class="is-hidden-touch">
         <a class="button is-primary" href="form-pasien.php">
             <span class="icon-text">
                 <span class="icon">
                     <i class="mdi mdi-account-plus"></i>
                 </span>
-                <span class="is-hidden-mobile">Pasien Baru</span>
+                <span>Pasien Baru</span>
             </span>
         </a>
+        </div>
     </div>
 </div>
 
@@ -63,7 +74,7 @@ if (!$is_htmx) {
     <div class="field has-addons">
         <div class="control is-expanded has-icons-left">
             <input
-                class="input"
+                class="input is-size-7-mobile"
                 type="search"
                 name="search"
                 placeholder="Cari berdasarkan nama pasien atau nomor RM (cth: RM-00001)..."
@@ -73,7 +84,7 @@ if (!$is_htmx) {
                 hx-select="#pasien-grid"
                 hx-trigger="keyup changed delay:500ms, search"
                 aria-label="Pencarian Pasien">
-            <span class="icon is-left">
+            <span class="icon is-left is-size-7-mobile">
                 <i class="mdi mdi-magnify"></i>
             </span>
         </div>
