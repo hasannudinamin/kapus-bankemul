@@ -129,12 +129,27 @@ function getActionButton($status, $id_rm) {
 <!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="is-flex is-justify-content-space-between is-align-items-center mb-5">
-    <h1 class="title is-size-3 mb-0 is-size-5-mobile">
-        <span class="icon has-text-primary mr-2"><i class="mdi mdi-monitor-dashboard"></i></span>
+<div class="columns is-vcentered mb-5 is-mobile">
+  <div class="column">
+    <h1 class="title is-size-3 is-size-5-mobile">
+        <span class="icon has-text-primary"><i class="mdi mdi-monitor-dashboard"></i></span>
         Dashboard Operasional
     </h1>
-    <div class="buttons">
+  </div>
+    <div class="column is-narrow is-narrow-mobile">
+      <div class="is-hidden-desktop">
+        <a href="form-pasien.php" class="button is-info is-light is-responsive-icon">
+            <span class="icon"><i class="mdi mdi-account-plus"></i></span>
+        </a>
+          <button 
+              hx-get="kunjungan-baru.php" 
+              hx-target="#modal-container"
+              class="button is-primary is-responsive-icon"
+              title="Buat Antrean">
+              <span class="icon"><i class="mdi mdi-plus-circle"></i></span>
+          </button>
+      </div>
+      <div class="is-hidden-touch">
         <a href="form-pasien.php" class="button is-info is-light">
             <span class="icon"><i class="mdi mdi-account-plus"></i></span>
             <span>Pasien Baru</span>
@@ -147,7 +162,8 @@ function getActionButton($status, $id_rm) {
               <span class="icon"><i class="mdi mdi-plus-circle"></i></span>
               <span>Buat Antrean</span>
           </button>
-        <div id="modal-container"></div>
+      </div>
+      <div id="modal-container"></div>
     </div>
 </div>
 
@@ -182,13 +198,13 @@ function getActionButton($status, $id_rm) {
 <div class="columns is-desktop is-variable is-4 mb-5">
 <!-- Tabel Antrean Kiri -->
     <div class="column is-8">
-        <div class="box h-100">
+        <div class="box box-desktop h-100">
             <!-- Header yang sudah ditambahkan tombol Lihat Semua -->
             <div class="is-flex is-justify-content-space-between is-align-items-center mb-4 border-bottom pb-2">
                 <h4 class="title is-5 mb-0 has-text-grey-dark">
                     <span class="icon"><i class="mdi mdi-clipboard-text-clock"></i></span> Antrean Aktif Hari Ini
                 </h4>
-                <a href="pelayanan.php" class="button is-small is-light is-info">
+                <a href="pelayanan.php" class="button is-small is-light is-info is-hidden-touch">
                     <span>Lihat Semua</span>
                     <span class="icon is-small"><i class="mdi mdi-arrow-right"></i></span>
                 </a>
@@ -241,7 +257,7 @@ function getActionButton($status, $id_rm) {
     <!-- Kolom Kanan: Peringatan Stok & Grafik Donat -->
     <div class="column is-4">
         <!-- Panel Stok Obat -->
-        <div class="box mb-4">
+        <div class="box box-desktop mb-4">
             <h4 class="title is-6 mb-3 has-text-danger border-bottom pb-2">
                 <span class="icon"><i class="mdi mdi-alert-circle-outline"></i></span> Stok Menipis (< 10)
             </h4>
@@ -266,7 +282,7 @@ function getActionButton($status, $id_rm) {
         </div>
 
         <!-- Grafik Proporsi Status -->
-        <div class="box">
+        <div class="box box-desktop">
             <h4 class="title is-6 has-text-grey-dark border-bottom pb-2 mb-4">
                 <span class="icon"><i class="mdi mdi-chart-donut"></i></span> Status Pelayanan Hari Ini
             </h4>
@@ -278,7 +294,7 @@ function getActionButton($status, $id_rm) {
 </div>
 
 <!-- Grafik Garis (Tren Kunjungan Bawah) -->
-<div class="box">
+<div class="box box-desktop">
     <h4 class="title is-6 has-text-grey-dark border-bottom pb-2 mb-4">
         <span class="icon"><i class="mdi mdi-chart-areaspline"></i></span> Tren Kunjungan 7 Hari Terakhir
     </h4>
