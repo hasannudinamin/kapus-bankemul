@@ -167,15 +167,25 @@ include 'includes/header.php';
                                 </div>
                                 
                                 <div class="buttons is-right mb-0">
-                                    <?php if ($rm['status_layanan'] !== 'selesai') : ?>
+                                    <?php if ($rm['status_layanan'] == 'menunggu' || $rm['status_layanan'] == 'pemeriksaan') : ?>
                                         <a href="pemeriksaan.php?id_rm=<?= e($rm['id']) ?>" class="button is-small is-info is-light">
                                             <span class="icon"><i class="mdi mdi-stethoscope"></i></span>
                                             <span>Proses</span>
                                         </a>
-                                    <?php else : ?>
-                                        <a href="konfirmasi-biaya.php?id_rm=<?= e($rm['id']) ?>" class="button is-small is-success is-light">
+                                    <?php elseif ($rm['status_layanan'] == 'farmasi') : ?>
+                                        <a href="farmasi.php?id_rm=<?= e($rm['id']) ?>" class="button is-small is-info is-light">
+                                            <span class="icon"><i class="mdi mdi-pill"></i></span>
+                                            <span>Validasi</span>
+                                        </a>
+                                    <?php elseif ($rm['status_layanan'] == 'pembayaran') : ?>
+                                        <a href="konfirmasi-biaya.php?id_rm=<?= e($rm['id']) ?>" class="button is-small is-info is-light">
                                             <span class="icon"><i class="mdi mdi-cash"></i></span>
-                                            <span>Biaya</span>
+                                            <span>Konfirmasi</span>
+                                        </a>
+                                    <?php else : ?>
+                                        <a href="detail-rm.php?id=<?= e($rm['id']) ?>" class="button is-small is-success is-light">
+                                            <span class="icon"><i class="mdi mdi-file"></i></span>
+                                            <span>Detail</span>
                                         </a>
                                     <?php endif; ?>
                                 </div>
