@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Containerfile
-    container_name: klinik-ira
+    container_name: kapus-bankemul
     ports:
       - "8082:80"
     volumes:
