@@ -100,7 +100,7 @@ include 'includes/header.php';
                 </div>
             </div>
 
-            <div class="column is-4">
+            <div class="column is-6">
                 <div class="field">
                     <label class="label" for="satuan">Satuan <span class="has-text-danger">*</span></label>
                     <div class="control has-icons-left">
@@ -117,7 +117,7 @@ include 'includes/header.php';
                 </div>
             </div>
 
-            <div class="column is-4">
+            <div class="column is-6">
                 <div class="field">
                     <label class="label" for="harga_satuan">Harga Satuan (Rp) <span class="has-text-danger">*</span></label>
                     <div class="control has-icons-left">
@@ -135,24 +135,6 @@ include 'includes/header.php';
                 </div>
             </div>
 
-            <div class="column is-4">
-                <div class="field">
-                    <label class="label" for="stok"><?= $id ? 'Stok Tersedia' : 'Stok Awal Gudang' ?></label>
-                    <div class="control has-icons-left">
-                        <input 
-                          class="input <?= $id ? 'has-background-white-bis has-text-weight-bold has-text-grey' : 'is-primary-focus' ?>" 
-                          type="number" 
-                          id="stok" 
-                          name="stok" 
-                          value="<?= $obat ? (int)$obat['stok'] : '0' ?>" 
-                          <?= $id ? 'readonly' : 'required min="0"' ?>>
-                        <span class="icon is-small is-left"><i class="mdi mdi-package-variant-closed"></i></span>
-                    </div>
-                    <?php if ($id): ?>
-                        <p class="help has-text-danger"><i class="mdi mdi-lock-outline"></i> Gunakan menu <strong>Restock</strong> pada tabel utama untuk menyesuaikan stok fisik.</p>
-                    <?php endif; ?>
-                </div>
-            </div>
         </div>
 
         <div class="field is-grouped mt-5">
