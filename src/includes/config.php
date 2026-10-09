@@ -2,7 +2,7 @@
 
 return [
   'app' => [
-    'name' => 'Klinik Ira',
-    'mode' => 'klinik' // pilih mandiri atau klinik
+    'name' => 'Praktik dr. Ira Yulia Dianti',
+    'mode' => 'mandiri' // pilih mandiri atau klinik
   ],
 ];
