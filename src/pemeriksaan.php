@@ -117,7 +117,7 @@ include 'includes/header.php';
                     <label class="label has-text-grey">Diagnosa Utama (ICD-10)</label>
                     <div class="control" id="diagnosa-widget" style="position: relative;">
                         <div class="control has-icons-left">
-                            <input class="input is-info-focus" type="text" id="input-cari-diagnosa" name="diagnosa" value="<?= e($kunjungan['diagnosa']) ?>" <?= $is_locked ? 'readonly' : 'hx-get="komponen-cari-diagnosa.php" hx-target="#hasil-pencarian-diagnosa" hx-trigger="input changed delay:500ms, search" hx-sync="this:replace" placeholder="Ketik nama penyakit atau kode ICD-10..." autocomplete="off"' ?>>
+                            <input class="input is-info-focus" type="text" id="input-cari-diagnosa" name="diagnosa" value="<?= e($kunjungan['diagnosa']) ?>" <?= $is_locked ? 'readonly' : 'hx-get="komponen-cari-diagnosa.php" hx-target="#hasil-pencarian-diagnosa" hx-trigger="input changed delay:200ms, search" hx-sync="this:replace" placeholder="Ketik nama penyakit atau kode ICD-10..." autocomplete="off"' ?>>
                             <span class="icon is-small is-left"><i class="mdi mdi-medical-bag"></i></span>
                         </div>
                         <?php if (!$is_locked): ?>
