@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <tr id="resep-<?= e($resep['id']) ?>">
                     <td class="is-vcentered has-text-weight-bold"><?= e($resep['nama_obat']) ?></td>
                     <td class="is-vcentered"><?= e($resep['aturan_pakai']) ?></td>
-                    <td class="is-vcentered"><?= e($resep['jumlah']) ?> <?= e($resep['satuan']) ?></td>
+                    <td class="is-vcentered"><?= arabicToRoman(e($resep['jumlah'])) ?></td>
                     <td class="is-vcentered has-text-right">
                         <button hx-post="aksi-resep-kunjungan.php" 
                                 hx-vals='{"action": "delete", "id": "<?= e($resep['id']) ?>"}'
