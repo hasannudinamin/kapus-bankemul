@@ -11,7 +11,7 @@ if (strlen($search) < 2) {
 
 // Membentuk URL API Clinical Tables NLM NIH
 // sf dan df digunakan untuk secara spesifik meminta format kembalian [kode, nama_diagnosa]
-$url = "https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?terms=" . urlencode($search) . "&sf=code,name&df=code,name&maxList=5";
+$url = "https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?terms=" . urlencode($search) . "&sf=code,name&df=code,name&maxList=3";
 
 // Menggunakan cURL untuk mengambil data dari API eksternal
 $ch = curl_init();
